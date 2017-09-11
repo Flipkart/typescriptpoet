@@ -23,7 +23,7 @@ public final class FieldSpec {
     public final List<AnnotationSpec> annotations;
     public final Set<Modifier> modifiers;
     public final CodeBlock initializer;
-    public final boolean isMutable;
+    public final boolean isMutable, isOptional;
 
     private FieldSpec(Builder builder) {
         this.type = checkNotNull(builder.type, "type == null");
@@ -35,6 +35,7 @@ public final class FieldSpec {
                 ? CodeBlock.builder().build()
                 : builder.initializer;
         this.isMutable = builder.isMutable;
+        this.isOptional = builder.isOptional;
     }
 
     public boolean hasModifier(Modifier modifier) {
@@ -45,11 +46,9 @@ public final class FieldSpec {
         codeWriter.emitJavadoc(typescriptDoc);
         codeWriter.emitAnnotations(annotations, false);
         codeWriter.emitModifiers(modifiers, implicitModifiers);
-        if (isMutable) {
-            codeWriter.emit("let $L: $T", name, type);
-        } else {
-            codeWriter.emit("const $L: $T", name, type);
-        }
+        String codeArg = !isMutable ? "const $L" : "$L";
+        codeArg = isOptional ? codeArg + "?" : codeArg;
+        codeWriter.emit(codeArg + ": $T", name, type);
         if (!initializer.isEmpty()) {
             codeWriter.emit(" = ");
             codeWriter.emit(initializer);
@@ -106,6 +105,7 @@ public final class FieldSpec {
         private final TypeName type;
         private final String name;
         private boolean isMutable = true;
+        private boolean isOptional = false;
 
         private final CodeBlock.Builder typescriptDoc = CodeBlock.builder();
         private final List<AnnotationSpec> annotations = new ArrayList<>();
@@ -124,6 +124,11 @@ public final class FieldSpec {
 
         public Builder isMutable(boolean isMutable) {
             this.isMutable = isMutable;
+            return this;
+        }
+
+        public Builder isOptional(boolean optional) {
+            this.isOptional = optional;
             return this;
         }
 

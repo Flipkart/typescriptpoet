@@ -509,9 +509,6 @@ public final class TypeSpec {
         public Builder addField(FieldSpec fieldSpec) {
             if (kind == Kind.INTERFACE || kind == Kind.ANNOTATION) {
                 requireExactlyOneOf(fieldSpec.modifiers, Modifier.PUBLIC, Modifier.PRIVATE);
-                Set<Modifier> check = EnumSet.of(Modifier.STATIC, Modifier.FINAL);
-                checkState(fieldSpec.modifiers.containsAll(check), "%s %s.%s requires modifiers %s",
-                        kind, name, fieldSpec.name, check);
             }
             fieldSpecs.add(fieldSpec);
             return this;
