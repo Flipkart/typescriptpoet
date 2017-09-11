@@ -19,20 +19,22 @@ import static main.java.com.flipkart.typescriptpoet.Util.checkState;
 public final class FieldSpec {
     public final TypeName type;
     public final String name;
-    public final CodeBlock javadoc;
+    public final CodeBlock typescriptDoc;
     public final List<AnnotationSpec> annotations;
     public final Set<Modifier> modifiers;
     public final CodeBlock initializer;
+    public final boolean isMutable;
 
     private FieldSpec(Builder builder) {
         this.type = checkNotNull(builder.type, "type == null");
         this.name = checkNotNull(builder.name, "name == null");
-        this.javadoc = builder.javadoc.build();
+        this.typescriptDoc = builder.typescriptDoc.build();
         this.annotations = Util.immutableList(builder.annotations);
         this.modifiers = Util.immutableSet(builder.modifiers);
         this.initializer = (builder.initializer == null)
                 ? CodeBlock.builder().build()
                 : builder.initializer;
+        this.isMutable = builder.isMutable;
     }
 
     public boolean hasModifier(Modifier modifier) {
@@ -40,10 +42,14 @@ public final class FieldSpec {
     }
 
     void emit(CodeWriter codeWriter, Set<Modifier> implicitModifiers) throws IOException {
-        codeWriter.emitJavadoc(javadoc);
+        codeWriter.emitJavadoc(typescriptDoc);
         codeWriter.emitAnnotations(annotations, false);
         codeWriter.emitModifiers(modifiers, implicitModifiers);
-        codeWriter.emit("$L:$T", name, type);
+        if (isMutable) {
+            codeWriter.emit("let $L: $T", name, type);
+        } else {
+            codeWriter.emit("const $L: $T", name, type);
+        }
         if (!initializer.isEmpty()) {
             codeWriter.emit(" = ");
             codeWriter.emit(initializer);
@@ -89,7 +95,7 @@ public final class FieldSpec {
 
     public Builder toBuilder() {
         Builder builder = new Builder(type, name);
-        builder.javadoc.add(javadoc);
+        builder.typescriptDoc.add(typescriptDoc);
         builder.annotations.addAll(annotations);
         builder.modifiers.addAll(modifiers);
         builder.initializer = initializer.isEmpty() ? null : initializer;
@@ -99,8 +105,9 @@ public final class FieldSpec {
     public static final class Builder {
         private final TypeName type;
         private final String name;
+        private boolean isMutable = true;
 
-        private final CodeBlock.Builder javadoc = CodeBlock.builder();
+        private final CodeBlock.Builder typescriptDoc = CodeBlock.builder();
         private final List<AnnotationSpec> annotations = new ArrayList<>();
         private final List<Modifier> modifiers = new ArrayList<>();
         private CodeBlock initializer = null;
@@ -110,13 +117,18 @@ public final class FieldSpec {
             this.name = name;
         }
 
-        public Builder addJavadoc(String format, Object... args) {
-            javadoc.add(format, args);
+        public Builder addDoc(String format, Object... args) {
+            typescriptDoc.add(format, args);
             return this;
         }
 
-        public Builder addJavadoc(CodeBlock block) {
-            javadoc.add(block);
+        public Builder isMutable(boolean isMutable) {
+            this.isMutable = isMutable;
+            return this;
+        }
+
+        public Builder addDoc(CodeBlock block) {
+            typescriptDoc.add(block);
             return this;
         }
 

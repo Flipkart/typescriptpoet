@@ -145,7 +145,7 @@ public final class TypeVariableName extends TypeName {
      * Returns type variable equivalent to {@code type}.
      */
     public static TypeVariableName get(java.lang.reflect.TypeVariable<?> type) {
-        return get(type, new LinkedHashMap<Type, TypeVariableName>());
+        return get(type, new LinkedHashMap<>());
     }
 
     /**

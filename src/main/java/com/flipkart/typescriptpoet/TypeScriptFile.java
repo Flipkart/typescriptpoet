@@ -68,6 +68,9 @@ public final class TypeScriptFile {
         checkArgument(Files.notExists(directory) || Files.isDirectory(directory),
                 "path %s exists but is not a directory.", directory);
 
+        if (!Files.exists(directory)) {
+            Files.createDirectories(directory);
+        }
         Path outputPath = directory.resolve(typeSpec.name + ".ts");
         try (Writer writer = new OutputStreamWriter(Files.newOutputStream(outputPath), UTF_8)) {
             writeTo(writer);

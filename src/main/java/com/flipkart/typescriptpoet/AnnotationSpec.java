@@ -28,7 +28,7 @@ import static main.java.com.flipkart.typescriptpoet.Util.checkNotNull;
  */
 public final class AnnotationSpec {
     public final TypeName type;
-    public final Map<String, List<CodeBlock>> members;
+    private final Map<String, List<CodeBlock>> members;
 
     private AnnotationSpec(Builder builder) {
         this.type = builder.type;

@@ -26,25 +26,17 @@ import javax.lang.model.util.SimpleTypeVisitor7;
 public class TypeName {
     public static final TypeName VOID = new TypeName("void");
     public static final TypeName BOOLEAN = new TypeName("boolean");
-    public static final TypeName BYTE = new TypeName("byte");
-    public static final TypeName SHORT = new TypeName("short");
-    public static final TypeName INT = new TypeName("int");
-    public static final TypeName LONG = new TypeName("long");
+    public static final TypeName BYTE = new TypeName("number");
+    public static final TypeName SHORT = new TypeName("number");
+    public static final TypeName INT = new TypeName("number");
+    public static final TypeName LONG = new TypeName("number");
     public static final TypeName CHAR = new TypeName("char");
-    public static final TypeName FLOAT = new TypeName("float");
-    public static final TypeName DOUBLE = new TypeName("double");
+    public static final TypeName FLOAT = new TypeName("number");
+    public static final TypeName DOUBLE = new TypeName("number");
     public static final TypeName STRING = new TypeName("string");
-    public static final ClassName OBJECT = ClassName.get("java.lang", "Object");
+    public static final TypeName ANY = new TypeName("any");
 
-    private static final ClassName BOXED_VOID = ClassName.get("java.lang", "Void");
-    private static final ClassName BOXED_BOOLEAN = ClassName.get("java.lang", "Boolean");
-    private static final ClassName BOXED_BYTE = ClassName.get("java.lang", "Byte");
-    private static final ClassName BOXED_SHORT = ClassName.get("java.lang", "Short");
-    private static final ClassName BOXED_INT = ClassName.get("java.lang", "Integer");
-    private static final ClassName BOXED_LONG = ClassName.get("java.lang", "Long");
-    private static final ClassName BOXED_CHAR = ClassName.get("java.lang", "Character");
-    private static final ClassName BOXED_FLOAT = ClassName.get("java.lang", "Float");
-    private static final ClassName BOXED_DOUBLE = ClassName.get("java.lang", "Double");
+    public static final ClassName OBJECT = ClassName.get("java.lang", "Object");
 
     /**
      * The name of this type if it is a keyword, or null.
@@ -100,59 +92,6 @@ public class TypeName {
      */
     public boolean isPrimitive() {
         return keyword != null && this != VOID;
-    }
-
-    /**
-     * Returns true if this is a boxed primitive type like {@code Integer}. Returns false for all
-     * other types types including unboxed primitives and {@code java.lang.Void}.
-     */
-    public boolean isBoxedPrimitive() {
-        return this.equals(BOXED_BOOLEAN)
-                || this.equals(BOXED_BYTE)
-                || this.equals(BOXED_SHORT)
-                || this.equals(BOXED_INT)
-                || this.equals(BOXED_LONG)
-                || this.equals(BOXED_CHAR)
-                || this.equals(BOXED_FLOAT)
-                || this.equals(BOXED_DOUBLE);
-    }
-
-    /**
-     * Returns a boxed type if this is a primitive type (like {@code Integer} for {@code int}) or
-     * {@code void}. Returns this type if boxing doesn't apply.
-     */
-    public TypeName box() {
-        if (keyword == null) return this; // Doesn't need boxing.
-        if (this == VOID) return BOXED_VOID;
-        if (this == BOOLEAN) return BOXED_BOOLEAN;
-        if (this == BYTE) return BOXED_BYTE;
-        if (this == SHORT) return BOXED_SHORT;
-        if (this == INT) return BOXED_INT;
-        if (this == LONG) return BOXED_LONG;
-        if (this == CHAR) return BOXED_CHAR;
-        if (this == FLOAT) return BOXED_FLOAT;
-        if (this == DOUBLE) return BOXED_DOUBLE;
-        throw new AssertionError(keyword);
-    }
-
-    /**
-     * Returns an unboxed type if this is a boxed primitive type (like {@code int} for {@code
-     * Integer}) or {@code Void}. Returns this type if it is already unboxed.
-     *
-     * @throws UnsupportedOperationException if this type isn't eligible for unboxing.
-     */
-    public TypeName unbox() {
-        if (keyword != null) return this; // Already unboxed.
-        if (this.equals(BOXED_VOID)) return VOID;
-        if (this.equals(BOXED_BOOLEAN)) return BOOLEAN;
-        if (this.equals(BOXED_BYTE)) return BYTE;
-        if (this.equals(BOXED_SHORT)) return SHORT;
-        if (this.equals(BOXED_INT)) return INT;
-        if (this.equals(BOXED_LONG)) return LONG;
-        if (this.equals(BOXED_CHAR)) return CHAR;
-        if (this.equals(BOXED_FLOAT)) return FLOAT;
-        if (this.equals(BOXED_DOUBLE)) return DOUBLE;
-        throw new UnsupportedOperationException("cannot unbox " + this);
     }
 
     @Override
@@ -228,6 +167,8 @@ public class TypeName {
                         return TypeName.FLOAT;
                     case DOUBLE:
                         return TypeName.DOUBLE;
+                    case NONE:
+                        return TypeName.ANY;
                     default:
                         throw new AssertionError();
                 }
