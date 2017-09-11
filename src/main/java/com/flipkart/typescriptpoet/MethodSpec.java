@@ -25,7 +25,7 @@ import static main.java.com.flipkart.typescriptpoet.Util.checkNotNull;
 import static main.java.com.flipkart.typescriptpoet.Util.checkState;
 
 public final class MethodSpec {
-    static final String CONSTRUCTOR = "<init>";
+    static final String CONSTRUCTOR = "constructor";
 
     public final String name;
     public final CodeBlock javadoc;
@@ -76,9 +76,9 @@ public final class MethodSpec {
         }
 
         if (isConstructor()) {
-            codeWriter.emit("$L(", enclosingName);
+            codeWriter.emit("$L(", CONSTRUCTOR);
         } else {
-            codeWriter.emit("$T $L(", returnType, name);
+            codeWriter.emit("$L(", name);
         }
 
         boolean firstParameter = true;
@@ -90,6 +90,10 @@ public final class MethodSpec {
         }
 
         codeWriter.emit(")");
+
+        if (returnType != null && !isConstructor()) {
+            codeWriter.emit(": $T", returnType);
+        }
 
         if (defaultValue != null && !defaultValue.isEmpty()) {
             codeWriter.emit(" default ");

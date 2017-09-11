@@ -38,9 +38,10 @@ public final class ParameterSpec {
         codeWriter.emitAnnotations(annotations, true);
         codeWriter.emitModifiers(modifiers);
         if (varargs) {
-            codeWriter.emit("$T... $L", TypeName.arrayComponent(type), name);
+            //todo check for varags
+//            codeWriter.emit("$T... $L", TypeName.arrayComponent(type), name);
         } else {
-            codeWriter.emit("$T $L", type, name);
+            codeWriter.emit("$L:$T", name, type);
         }
     }
 
