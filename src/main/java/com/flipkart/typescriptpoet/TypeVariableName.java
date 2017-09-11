@@ -1,20 +1,15 @@
-package main.java.com.flipkart.typescriptpoet;
+package com.flipkart.typescriptpoet;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import javax.lang.model.element.TypeParameterElement;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.type.TypeVariable;
 
-import static main.java.com.flipkart.typescriptpoet.Util.checkArgument;
-import static main.java.com.flipkart.typescriptpoet.Util.checkNotNull;
+import static com.flipkart.typescriptpoet.Util.checkArgument;
+import static com.flipkart.typescriptpoet.Util.checkNotNull;
 
 public final class TypeVariableName extends TypeName {
     public final String name;
@@ -145,7 +140,7 @@ public final class TypeVariableName extends TypeName {
      * Returns type variable equivalent to {@code type}.
      */
     public static TypeVariableName get(java.lang.reflect.TypeVariable<?> type) {
-        return get(type, new LinkedHashMap<>());
+        return TypeVariableName.get(type, new LinkedHashMap<Type, TypeVariableName>());
     }
 
     /**

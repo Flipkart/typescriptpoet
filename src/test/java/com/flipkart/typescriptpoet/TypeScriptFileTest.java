@@ -1,6 +1,5 @@
-package test.java.com.flipkart.typescriptpoet;
+package com.flipkart.typescriptpoet;
 
-import main.java.com.flipkart.typescriptpoet.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;

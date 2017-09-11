@@ -1,4 +1,4 @@
-package main.java.com.flipkart.typescriptpoet;
+package com.flipkart.typescriptpoet;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
 import javax.lang.model.element.Element;
 import javax.lang.model.type.TypeMirror;
 
-import static main.java.com.flipkart.typescriptpoet.Util.checkArgument;
+import static com.flipkart.typescriptpoet.Util.checkArgument;
 
 /**
  * A fragment of a .java file, potentially containing declarations, statements, and documentation.

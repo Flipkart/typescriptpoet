@@ -1,4 +1,4 @@
-package main.java.com.flipkart.typescriptpoet;
+package com.flipkart.typescriptpoet;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
@@ -11,8 +11,8 @@ import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.VariableElement;
 
-import static main.java.com.flipkart.typescriptpoet.Util.checkArgument;
-import static main.java.com.flipkart.typescriptpoet.Util.checkNotNull;
+import static com.flipkart.typescriptpoet.Util.checkArgument;
+import static com.flipkart.typescriptpoet.Util.checkNotNull;
 
 /**
  * A generated parameter declaration.

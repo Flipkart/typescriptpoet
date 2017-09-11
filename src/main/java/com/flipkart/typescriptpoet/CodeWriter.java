@@ -1,5 +1,4 @@
-package main.java.com.flipkart.typescriptpoet;
-
+package com.flipkart.typescriptpoet;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -16,7 +15,7 @@ import java.util.Set;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Modifier;
 
-import static main.java.com.flipkart.typescriptpoet.Util.*;
+import static com.flipkart.typescriptpoet.Util.*;
 
 
 /**

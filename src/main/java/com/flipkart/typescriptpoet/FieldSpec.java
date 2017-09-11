@@ -1,4 +1,4 @@
-package main.java.com.flipkart.typescriptpoet;
+package com.flipkart.typescriptpoet;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
@@ -9,9 +9,9 @@ import java.util.Set;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Modifier;
 
-import static main.java.com.flipkart.typescriptpoet.Util.checkArgument;
-import static main.java.com.flipkart.typescriptpoet.Util.checkNotNull;
-import static main.java.com.flipkart.typescriptpoet.Util.checkState;
+import static com.flipkart.typescriptpoet.Util.checkArgument;
+import static com.flipkart.typescriptpoet.Util.checkNotNull;
+import static com.flipkart.typescriptpoet.Util.checkState;
 
 /**
  * A generated field declaration.

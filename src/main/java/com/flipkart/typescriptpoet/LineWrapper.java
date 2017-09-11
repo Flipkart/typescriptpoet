@@ -1,9 +1,9 @@
-package main.java.com.flipkart.typescriptpoet;
+package com.flipkart.typescriptpoet;
 
 
 import java.io.IOException;
 
-import static main.java.com.flipkart.typescriptpoet.Util.checkNotNull;
+import static com.flipkart.typescriptpoet.Util.checkNotNull;
 
 /**
  * Implements soft line wrapping on an appendable. To use, append characters using {@link #append}

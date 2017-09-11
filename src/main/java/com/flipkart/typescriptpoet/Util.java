@@ -1,4 +1,4 @@
-package main.java.com.flipkart.typescriptpoet;
+package com.flipkart.typescriptpoet;
 
 import static java.lang.Character.isISOControl;
 

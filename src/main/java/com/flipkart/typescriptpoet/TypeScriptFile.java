@@ -1,4 +1,4 @@
-package main.java.com.flipkart.typescriptpoet;
+package com.flipkart.typescriptpoet;
 
 import javax.annotation.processing.Filer;
 import javax.lang.model.element.Element;
@@ -12,8 +12,8 @@ import java.nio.file.Path;
 import java.util.*;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static main.java.com.flipkart.typescriptpoet.Util.checkArgument;
-import static main.java.com.flipkart.typescriptpoet.Util.checkNotNull;
+import static com.flipkart.typescriptpoet.Util.checkArgument;
+import static com.flipkart.typescriptpoet.Util.checkNotNull;
 
 /**
  * A Java file containing a single top level class.

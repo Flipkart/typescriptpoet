@@ -1,4 +1,5 @@
-package main.java.com.flipkart.typescriptpoet;
+package com.flipkart.typescriptpoet;
+
 
 import java.io.IOException;
 import java.lang.reflect.*;

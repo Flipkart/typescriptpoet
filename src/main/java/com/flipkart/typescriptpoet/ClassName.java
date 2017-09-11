@@ -1,4 +1,4 @@
-package main.java.com.flipkart.typescriptpoet;
+package com.flipkart.typescriptpoet;
 
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
@@ -13,8 +13,8 @@ import java.util.Map;
 
 import static javax.lang.model.element.NestingKind.MEMBER;
 import static javax.lang.model.element.NestingKind.TOP_LEVEL;
-import static main.java.com.flipkart.typescriptpoet.Util.checkArgument;
-import static main.java.com.flipkart.typescriptpoet.Util.checkNotNull;
+import static com.flipkart.typescriptpoet.Util.checkArgument;
+import static com.flipkart.typescriptpoet.Util.checkNotNull;
 
 public final class ClassName extends TypeName implements Comparable<ClassName> {
     public static final ClassName OBJECT = ClassName.get(Object.class);

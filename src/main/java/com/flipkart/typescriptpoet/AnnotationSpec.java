@@ -1,4 +1,4 @@
-package main.java.com.flipkart.typescriptpoet;
+package com.flipkart.typescriptpoet;
 
 import java.io.IOException;
 import java.lang.annotation.Annotation;
@@ -20,8 +20,8 @@ import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.SimpleAnnotationValueVisitor7;
 
-import static main.java.com.flipkart.typescriptpoet.Util.characterLiteralWithoutSingleQuotes;
-import static main.java.com.flipkart.typescriptpoet.Util.checkNotNull;
+import static com.flipkart.typescriptpoet.Util.characterLiteralWithoutSingleQuotes;
+import static com.flipkart.typescriptpoet.Util.checkNotNull;
 
 /**
  * A generated annotation on a declaration.

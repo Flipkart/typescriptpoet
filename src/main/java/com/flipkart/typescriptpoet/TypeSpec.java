@@ -1,4 +1,4 @@
-package main.java.com.flipkart.typescriptpoet;
+package com.flipkart.typescriptpoet;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
@@ -16,7 +16,7 @@ import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.Modifier;
 
-import static main.java.com.flipkart.typescriptpoet.Util.*;
+import static com.flipkart.typescriptpoet.Util.*;
 
 /** A generated class, interface, or enum declaration. */
 public final class TypeSpec {

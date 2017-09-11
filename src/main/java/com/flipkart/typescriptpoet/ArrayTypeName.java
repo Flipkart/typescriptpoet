@@ -1,4 +1,4 @@
-package main.java.com.flipkart.typescriptpoet;
+package com.flipkart.typescriptpoet;
 
 import java.io.IOException;
 import java.lang.reflect.GenericArrayType;
@@ -10,7 +10,7 @@ import java.util.Map;
 import javax.lang.model.element.TypeParameterElement;
 import javax.lang.model.type.ArrayType;
 
-import static main.java.com.flipkart.typescriptpoet.Util.checkNotNull;
+import static com.flipkart.typescriptpoet.Util.checkNotNull;
 
 public final class ArrayTypeName extends TypeName {
     public final TypeName componentType;
