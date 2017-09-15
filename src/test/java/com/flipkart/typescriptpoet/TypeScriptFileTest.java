@@ -19,13 +19,11 @@ public class TypeScriptFileTest {
 
         FieldSpec redPropSpec = FieldSpec.builder(TypeName.STRING, "red").initializer("\"red\"").build();
         FieldSpec greenPropSpec = FieldSpec.builder(TypeName.STRING, "green").addModifiers(Modifier.PUBLIC).build();
-        FieldSpec bluePropSpec = FieldSpec.builder(TypeName.ARRAY, "blue").build();
         FieldSpec purplePropSpec = FieldSpec.builder(TypeName.INT, "purple").isOptional(true).build();
 
         List<FieldSpec> propertySpecs = new ArrayList<>();
         propertySpecs.add(redPropSpec);
         propertySpecs.add(greenPropSpec);
-        propertySpecs.add(bluePropSpec);
         propertySpecs.add(purplePropSpec);
 
         for (FieldSpec spec : propertySpecs) {
@@ -73,13 +71,31 @@ public class TypeScriptFileTest {
         String className = "ColorInterface";
         TypeSpec.Builder typeSpecBuilder = TypeSpec.interfaceBuilder(className);
 
+        TypeSpec.Builder enumTypeSpecBuilder = TypeSpec.enumBuilder("color");
+
         FieldSpec greenPropSpec = FieldSpec.builder(TypeName.STRING, "green").addModifiers(Modifier.PUBLIC).build();
         typeSpecBuilder.addField(greenPropSpec);
+        enumTypeSpecBuilder.addEnumConstant("Red").addModifiers(Modifier.PUBLIC, Modifier.STATIC);
+        enumTypeSpecBuilder.addEnumConstant("Green").addModifiers(Modifier.PUBLIC, Modifier.STATIC);
+
+        typeSpecBuilder.addType(enumTypeSpecBuilder.build());
 
         TypeSpec typeSpec = typeSpecBuilder.build();
+
         File target = new File(TypeScriptFileTest.class.getName()).getParentFile();
         File generatedSources = new File(target, "generated-sources");
 
+        TypeScriptFile.builder(typeSpec).build().writeTo(generatedSources);
+    }
+
+    @Test
+    public void simpleTypeScriptInheritanceGeneration() throws Exception {
+        File target = new File(TypeScriptFileTest.class.getName()).getParentFile();
+        File generatedSources = new File(target, "generated-sources");
+
+        String subClassName = "SubColorInheritance";
+        TypeSpec.Builder typeSpecBuilder = TypeSpec.classBuilder(subClassName).superclass(ClassName.get("", "ColorInheritance"));
+        TypeSpec typeSpec = typeSpecBuilder.build();
         TypeScriptFile.builder(typeSpec).build().writeTo(generatedSources);
     }
 }

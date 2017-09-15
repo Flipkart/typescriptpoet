@@ -32,7 +32,6 @@ public class TypeName {
     public static final TypeName DOUBLE = new TypeName("number");
     public static final TypeName STRING = new TypeName("string");
     public static final TypeName ANY = new TypeName("any");
-    public static final TypeName ARRAY = new TypeName("number[]");
 
     public static final ClassName OBJECT = ClassName.get("java.lang", "Object");
 
@@ -143,7 +142,7 @@ public class TypeName {
         return get(mirror, new LinkedHashMap<TypeParameterElement, TypeVariableName>());
     }
 
-    static TypeName get(TypeMirror mirror,
+    static TypeName get(final TypeMirror mirror,
                         final Map<TypeParameterElement, TypeVariableName> typeVariables) {
         return mirror.accept(new SimpleTypeVisitor7<TypeName, Void>() {
             @Override
@@ -167,8 +166,6 @@ public class TypeName {
                         return TypeName.DOUBLE;
                     case NONE:
                         return TypeName.ANY;
-                    case ARRAY:
-                        return TypeName.ARRAY;
                     default:
                         throw new AssertionError();
                 }
@@ -251,7 +248,6 @@ public class TypeName {
             if (type == char.class) return CHAR;
             if (type == float.class) return FLOAT;
             if (type == double.class) return DOUBLE;
-            if (type == Array.class) return ARRAY;
             if (classType.isArray()) return ArrayTypeName.of(get(classType.getComponentType(), map));
             return ClassName.get(classType);
 
