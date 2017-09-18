@@ -59,6 +59,14 @@ public class TypeScriptFileTest {
         classFunction.addCode(codeBuilder.build());
         typeSpecBuilder.addMethod(classFunction.build());
 
+
+        classFunction = MethodSpec.methodBuilder("setDisp").addJavadoc("//function");
+        codeBuilder = CodeBlock.builder();
+        codeBuilder.addStatement("console.log(\"Engine is  :  \"+ this.engine)");
+
+        classFunction.addCode(codeBuilder.build());
+        typeSpecBuilder.addMethod(classFunction.build());
+
         TypeSpec typeSpec = typeSpecBuilder.build();
         File target = new File(TypeScriptFileTest.class.getName()).getParentFile();
         File generatedSources = new File(target, "generated-sources");
