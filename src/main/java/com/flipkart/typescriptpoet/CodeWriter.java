@@ -1,19 +1,9 @@
 package com.flipkart.typescriptpoet;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.EnumSet;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Modifier;
+import java.io.IOException;
+import java.util.*;
 
 import static com.flipkart.typescriptpoet.Util.*;
 

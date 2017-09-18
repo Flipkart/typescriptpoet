@@ -1,5 +1,7 @@
 package com.flipkart.typescriptpoet;
 
+import javax.lang.model.element.Element;
+import javax.lang.model.type.TypeMirror;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -7,8 +9,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import javax.lang.model.element.Element;
-import javax.lang.model.type.TypeMirror;
 
 import static com.flipkart.typescriptpoet.Util.checkArgument;
 

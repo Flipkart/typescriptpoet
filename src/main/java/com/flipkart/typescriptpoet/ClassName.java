@@ -11,10 +11,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import static javax.lang.model.element.NestingKind.MEMBER;
-import static javax.lang.model.element.NestingKind.TOP_LEVEL;
 import static com.flipkart.typescriptpoet.Util.checkArgument;
 import static com.flipkart.typescriptpoet.Util.checkNotNull;
+import static javax.lang.model.element.NestingKind.MEMBER;
+import static javax.lang.model.element.NestingKind.TOP_LEVEL;
 
 public final class ClassName extends TypeName implements Comparable<ClassName> {
     public static final ClassName OBJECT = ClassName.get(Object.class);

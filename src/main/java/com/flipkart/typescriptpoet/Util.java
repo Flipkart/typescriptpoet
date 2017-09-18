@@ -1,9 +1,9 @@
 package com.flipkart.typescriptpoet;
 
-import static java.lang.Character.isISOControl;
-
-import java.util.*;
 import javax.lang.model.element.Modifier;
+import java.util.*;
+
+import static java.lang.Character.isISOControl;
 
 /**
  * Like Guava, but worse and standalone. This makes it easier to mix JavaPoet with libraries that

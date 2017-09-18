@@ -1,24 +1,17 @@
 package com.flipkart.typescriptpoet;
 
-import java.io.IOException;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.EnumSet;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.Modifier;
+import java.io.IOException;
+import java.lang.reflect.Type;
+import java.util.*;
 
 import static com.flipkart.typescriptpoet.Util.*;
 
-/** A generated class, interface, or enum declaration. */
+/**
+ * A generated class, interface, or enum declaration.
+ */
 public final class TypeSpec {
     public final Kind kind;
     public final String name;
@@ -309,18 +302,21 @@ public final class TypeSpec {
         }
     }
 
-    @Override public boolean equals(Object o) {
+    @Override
+    public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null) return false;
         if (getClass() != o.getClass()) return false;
         return toString().equals(o.toString());
     }
 
-    @Override public int hashCode() {
+    @Override
+    public int hashCode() {
         return toString().hashCode();
     }
 
-    @Override public String toString() {
+    @Override
+    public String toString() {
         StringBuilder out = new StringBuilder();
         try {
             CodeWriter codeWriter = new CodeWriter(out);

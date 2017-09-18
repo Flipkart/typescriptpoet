@@ -1,17 +1,15 @@
 package com.flipkart.typescriptpoet;
 
+import javax.lang.model.SourceVersion;
+import javax.lang.model.element.Modifier;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
-import javax.lang.model.SourceVersion;
-import javax.lang.model.element.Modifier;
 
-import static com.flipkart.typescriptpoet.Util.checkArgument;
-import static com.flipkart.typescriptpoet.Util.checkNotNull;
-import static com.flipkart.typescriptpoet.Util.checkState;
+import static com.flipkart.typescriptpoet.Util.*;
 
 /**
  * A generated field declaration.

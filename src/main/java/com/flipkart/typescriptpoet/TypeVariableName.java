@@ -1,12 +1,11 @@
 package com.flipkart.typescriptpoet;
 
-import java.io.IOException;
-import java.lang.reflect.Type;
-import java.util.*;
-
 import javax.lang.model.element.TypeParameterElement;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.type.TypeVariable;
+import java.io.IOException;
+import java.lang.reflect.Type;
+import java.util.*;
 
 import static com.flipkart.typescriptpoet.Util.checkArgument;
 import static com.flipkart.typescriptpoet.Util.checkNotNull;

@@ -1,19 +1,17 @@
 package com.flipkart.typescriptpoet;
 
-import javax.annotation.processing.Filer;
-import javax.lang.model.element.Element;
 import javax.lang.model.element.Modifier;
-import javax.tools.JavaFileObject;
-import javax.tools.SimpleJavaFileObject;
-import java.io.*;
-import java.net.URI;
+import java.io.File;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
 import static com.flipkart.typescriptpoet.Util.checkArgument;
 import static com.flipkart.typescriptpoet.Util.checkNotNull;
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 /**
  * A Java file containing a single top level class.

@@ -4,11 +4,7 @@ import java.io.IOException;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static com.flipkart.typescriptpoet.Util.checkArgument;
 import static com.flipkart.typescriptpoet.Util.checkNotNull;
