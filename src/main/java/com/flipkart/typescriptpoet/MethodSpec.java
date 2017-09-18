@@ -2,14 +2,6 @@ package com.flipkart.typescriptpoet;
 
 
 import javax.lang.model.SourceVersion;
-import javax.lang.model.element.ExecutableElement;
-import javax.lang.model.element.Modifier;
-import javax.lang.model.element.TypeParameterElement;
-import javax.lang.model.type.DeclaredType;
-import javax.lang.model.type.ExecutableType;
-import javax.lang.model.type.TypeMirror;
-import javax.lang.model.type.TypeVariable;
-import javax.lang.model.util.Types;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.*;
@@ -104,10 +96,6 @@ public final class MethodSpec {
 
         if (hasModifier(Modifier.ABSTRACT)) {
             codeWriter.emit(";\n");
-        } else if (hasModifier(Modifier.NATIVE)) {
-            // Code is allowed to support stuff like GWT JSNI.
-            codeWriter.emit(code);
-            codeWriter.emit(";\n");
         } else {
             codeWriter.emit(" {\n");
 
@@ -158,80 +146,6 @@ public final class MethodSpec {
 
     public static Builder constructorBuilder() {
         return new Builder(CONSTRUCTOR);
-    }
-
-    /**
-     * Returns a new method spec builder that overrides {@code method}.
-     * <p>
-     * <p>This will copy its visibility modifiers, type parameters, return type, name, parameters, and
-     * throws declarations. An {@link Override} annotation will be added.
-     * <p>
-     * <p>Note that in JavaPoet 1.2 through 1.7 this method retained annotations from the method and
-     * parameters of the overridden method. Since JavaPoet 1.8 annotations must be added separately.
-     */
-    public static Builder overriding(ExecutableElement method) {
-        checkNotNull(method, "method == null");
-
-        Set<Modifier> modifiers = method.getModifiers();
-        if (modifiers.contains(Modifier.PRIVATE)
-                || modifiers.contains(Modifier.FINAL)
-                || modifiers.contains(Modifier.STATIC)) {
-            throw new IllegalArgumentException("cannot override method with modifiers: " + modifiers);
-        }
-
-        String methodName = method.getSimpleName().toString();
-        MethodSpec.Builder methodBuilder = MethodSpec.methodBuilder(methodName);
-
-        methodBuilder.addAnnotation(Override.class);
-
-        modifiers = new LinkedHashSet<>(modifiers);
-        modifiers.remove(Modifier.ABSTRACT);
-        modifiers.remove(Util.DEFAULT); // LinkedHashSet permits null as element for Java 7
-        methodBuilder.addModifiers(modifiers);
-
-        for (TypeParameterElement typeParameterElement : method.getTypeParameters()) {
-            TypeVariable var = (TypeVariable) typeParameterElement.asType();
-            methodBuilder.addTypeVariable(TypeVariableName.get(var));
-        }
-
-        methodBuilder.returns(TypeName.get(method.getReturnType()));
-        methodBuilder.addParameters(ParameterSpec.parametersOf(method));
-        methodBuilder.varargs(method.isVarArgs());
-
-        for (TypeMirror thrownType : method.getThrownTypes()) {
-            methodBuilder.addException(TypeName.get(thrownType));
-        }
-
-        return methodBuilder;
-    }
-
-    /**
-     * Returns a new method spec builder that overrides {@code method} as a member of {@code
-     * enclosing}. This will resolve type parameters: for example overriding {@link
-     * Comparable#compareTo} in a type that implements {@code Comparable<Movie>}, the {@code T}
-     * parameter will be resolved to {@code Movie}.
-     * <p>
-     * <p>This will copy its visibility modifiers, type parameters, return type, name, parameters, and
-     * throws declarations. An {@link Override} annotation will be added.
-     * <p>
-     * <p>Note that in JavaPoet 1.2 through 1.7 this method retained annotations from the method and
-     * parameters of the overridden method. Since JavaPoet 1.8 annotations must be added separately.
-     */
-    public static Builder overriding(
-            ExecutableElement method, DeclaredType enclosing, Types types) {
-        ExecutableType executableType = (ExecutableType) types.asMemberOf(enclosing, method);
-        List<? extends TypeMirror> resolvedParameterTypes = executableType.getParameterTypes();
-        TypeMirror resolvedReturnType = executableType.getReturnType();
-
-        Builder builder = overriding(method);
-        builder.returns(TypeName.get(resolvedReturnType));
-        for (int i = 0, size = builder.parameters.size(); i < size; i++) {
-            ParameterSpec parameter = builder.parameters.get(i);
-            TypeName type = TypeName.get(resolvedParameterTypes.get(i));
-            builder.parameters.set(i, parameter.toBuilder(type, parameter.name).build());
-        }
-
-        return builder;
     }
 
     public Builder toBuilder() {

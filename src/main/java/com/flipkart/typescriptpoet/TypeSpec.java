@@ -2,7 +2,6 @@ package com.flipkart.typescriptpoet;
 
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
-import javax.lang.model.element.Modifier;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.*;
@@ -240,7 +239,7 @@ public final class TypeSpec {
 
             // Static fields.
             for (FieldSpec fieldSpec : fieldSpecs) {
-                if (!fieldSpec.hasModifier(Modifier.STATIC)) continue;
+                if (!fieldSpec.hasModifier(com.flipkart.typescriptpoet.Modifier.STATIC)) continue;
                 if (!firstMember) codeWriter.emit("\n");
                 fieldSpec.emit(codeWriter, kind.implicitFieldModifiers);
                 firstMember = false;
@@ -254,7 +253,7 @@ public final class TypeSpec {
 
             // Non-static fields.
             for (FieldSpec fieldSpec : fieldSpecs) {
-                if (fieldSpec.hasModifier(Modifier.STATIC)) continue;
+                if (fieldSpec.hasModifier(com.flipkart.typescriptpoet.Modifier.STATIC)) continue;
                 if (!firstMember) codeWriter.emit("\n");
                 fieldSpec.emit(codeWriter, kind.implicitFieldModifiers);
                 firstMember = false;

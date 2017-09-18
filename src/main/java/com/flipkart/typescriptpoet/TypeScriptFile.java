@@ -1,6 +1,5 @@
 package com.flipkart.typescriptpoet;
 
-import javax.lang.model.element.Modifier;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStreamWriter;

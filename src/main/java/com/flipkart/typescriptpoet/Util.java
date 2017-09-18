@@ -1,6 +1,5 @@
 package com.flipkart.typescriptpoet;
 
-import javax.lang.model.element.Modifier;
 import java.util.*;
 
 import static java.lang.Character.isISOControl;
@@ -16,16 +15,7 @@ final class Util {
     /**
      * Modifier.DEFAULT doesn't exist until Java 8, but we want to run on earlier releases.
      */
-    static final Modifier DEFAULT;
-
-    static {
-        javax.lang.model.element.Modifier def = null;
-        try {
-            def = javax.lang.model.element.Modifier.valueOf("DEFAULT");
-        } catch (IllegalArgumentException ignored) {
-        }
-        DEFAULT = def;
-    }
+    static final Modifier DEFAULT = Modifier.DEFAULT;
 
     static <K, V> Map<K, List<V>> immutableMultimap(Map<K, List<V>> multimap) {
         LinkedHashMap<K, List<V>> result = new LinkedHashMap<>();

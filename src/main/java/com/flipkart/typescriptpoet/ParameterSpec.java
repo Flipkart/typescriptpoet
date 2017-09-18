@@ -2,7 +2,6 @@ package com.flipkart.typescriptpoet;
 
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.ExecutableElement;
-import javax.lang.model.element.Modifier;
 import javax.lang.model.element.VariableElement;
 import java.io.IOException;
 import java.lang.reflect.Type;
@@ -68,22 +67,6 @@ public final class ParameterSpec {
         } catch (IOException e) {
             throw new AssertionError();
         }
-    }
-
-    public static ParameterSpec get(VariableElement element) {
-        TypeName type = TypeName.get(element.asType());
-        String name = element.getSimpleName().toString();
-        return ParameterSpec.builder(type, name)
-                .addModifiers(element.getModifiers())
-                .build();
-    }
-
-    static List<ParameterSpec> parametersOf(ExecutableElement method) {
-        List<ParameterSpec> result = new ArrayList<>();
-        for (VariableElement parameter : method.getParameters()) {
-            result.add(ParameterSpec.get(parameter));
-        }
-        return result;
     }
 
     public static Builder builder(TypeName type, String name, Modifier... modifiers) {

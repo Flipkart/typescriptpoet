@@ -4,7 +4,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-import javax.lang.model.element.Modifier;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;

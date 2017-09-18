@@ -1,7 +1,6 @@
 package com.flipkart.typescriptpoet;
 
 import javax.lang.model.SourceVersion;
-import javax.lang.model.element.Modifier;
 import java.io.IOException;
 import java.util.*;
 
