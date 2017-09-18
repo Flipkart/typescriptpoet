@@ -276,7 +276,6 @@ public final class MethodSpec {
             checkArgument(name.equals(CONSTRUCTOR) || SourceVersion.isName(name),
                     "not a valid name: %s", name);
             this.name = name;
-            this.returnType = name.equals(CONSTRUCTOR) ? null : TypeName.VOID;
         }
 
         public Builder addJavadoc(String format, Object... args) {

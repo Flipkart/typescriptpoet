@@ -57,6 +57,10 @@ public final class ClassName extends TypeName implements Comparable<ClassName> {
         return names.get(0);
     }
 
+    public String moduleName() {
+        return names.get(0).replace(".", "/");
+    }
+
     /**
      * Returns the enclosing class, like {@link Map} for {@code Map.Entry}. Returns null if this class
      * is not nested in another class.
