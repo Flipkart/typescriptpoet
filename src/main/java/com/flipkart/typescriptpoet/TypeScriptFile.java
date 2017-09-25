@@ -34,6 +34,7 @@ public final class TypeScriptFile {
     };
 
     public final CodeBlock fileComment;
+    public final String packageName;
     public final TypeSpec typeSpec;
     public final boolean skipJavaLangImports;
     private final Set<String> staticImports;
@@ -41,6 +42,7 @@ public final class TypeScriptFile {
 
     private TypeScriptFile(Builder builder) {
         this.fileComment = builder.fileComment.build();
+        this.packageName = builder.packageName;
         this.typeSpec = builder.typeSpec;
         this.skipJavaLangImports = builder.skipJavaLangImports;
         this.staticImports = Util.immutableSet(builder.staticImports);
@@ -65,10 +67,16 @@ public final class TypeScriptFile {
         checkArgument(Files.notExists(directory) || Files.isDirectory(directory),
                 "path %s exists but is not a directory.", directory);
 
-        if (!Files.exists(directory)) {
-            Files.createDirectories(directory);
+        Path outputDirectory = directory;
+
+        if (!packageName.isEmpty()) {
+            for (String packageComponent : packageName.split("\\.")) {
+                outputDirectory = outputDirectory.resolve(packageComponent);
+            }
+            Files.createDirectories(outputDirectory);
         }
-        Path outputPath = directory.resolve(typeSpec.name + ".ts");
+
+        Path outputPath = outputDirectory.resolve(typeSpec.name + ".ts");
         try (Writer writer = new OutputStreamWriter(Files.newOutputStream(outputPath), UTF_8)) {
             writeTo(writer);
         }
@@ -82,6 +90,8 @@ public final class TypeScriptFile {
     }
 
     private void emit(CodeWriter codeWriter) throws IOException {
+        codeWriter.pushPackage(packageName);
+
         if (!fileComment.isEmpty()) {
             codeWriter.emitComment(fileComment);
         }
@@ -104,6 +114,7 @@ public final class TypeScriptFile {
         }
 
         typeSpec.emit(codeWriter, null, Collections.<Modifier>emptySet());
+        codeWriter.popPackage();
     }
 
     @Override
@@ -130,13 +141,14 @@ public final class TypeScriptFile {
         }
     }
 
-    public static Builder builder(TypeSpec typeSpec) {
+    public static Builder builder(String packageName, TypeSpec typeSpec) {
         checkNotNull(typeSpec, "typeSpec == null");
-        return new Builder(typeSpec);
+        checkNotNull(packageName, "packageName == null");
+        return new Builder(packageName, typeSpec);
     }
 
     public Builder toBuilder() {
-        Builder builder = new Builder(typeSpec);
+        Builder builder = new Builder(packageName, typeSpec);
         builder.fileComment.add(fileComment);
         builder.skipJavaLangImports = skipJavaLangImports;
         builder.indent = indent;
@@ -145,12 +157,14 @@ public final class TypeScriptFile {
 
     public static final class Builder {
         private final TypeSpec typeSpec;
+        private final String packageName;
         private final CodeBlock.Builder fileComment = CodeBlock.builder();
         private final Set<String> staticImports = new TreeSet<>();
         private boolean skipJavaLangImports;
         private String indent = "  ";
 
-        private Builder(TypeSpec typeSpec) {
+        private Builder(String packageName, TypeSpec typeSpec) {
+            this.packageName = packageName;
             this.typeSpec = typeSpec;
         }
 

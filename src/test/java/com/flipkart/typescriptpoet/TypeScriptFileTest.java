@@ -70,7 +70,7 @@ public class TypeScriptFileTest {
         File target = new File(TypeScriptFileTest.class.getName()).getParentFile();
         File generatedSources = new File(target, "generated-sources");
 
-        TypeScriptFile.builder(typeSpec).build().writeTo(generatedSources);
+        TypeScriptFile.builder("com.flipkart.typescript", typeSpec).build().writeTo(generatedSources);
     }
 
     @Test
@@ -92,7 +92,7 @@ public class TypeScriptFileTest {
         File target = new File(TypeScriptFileTest.class.getName()).getParentFile();
         File generatedSources = new File(target, "generated-sources");
 
-        TypeScriptFile.builder(typeSpec).build().writeTo(generatedSources);
+        TypeScriptFile.builder("com.flipkart.typescript", typeSpec).build().writeTo(generatedSources);
     }
 
     @Test
@@ -103,6 +103,6 @@ public class TypeScriptFileTest {
         String subClassName = "SubColorInheritance";
         TypeSpec.Builder typeSpecBuilder = TypeSpec.classBuilder(subClassName).superclass(ClassName.get("", "ColorInheritance"));
         TypeSpec typeSpec = typeSpecBuilder.build();
-        TypeScriptFile.builder(typeSpec).build().writeTo(generatedSources);
+        TypeScriptFile.builder("com.flipkart.typescript", typeSpec).build().writeTo(generatedSources);
     }
 }
