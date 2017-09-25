@@ -118,7 +118,7 @@ public final class TypeScriptFile {
                     prefix.append("../");
                 }
             }
-            codeWriter.emit("import $L;\n", className.simpleName() + " = require(" + prefix.toString() + className.moduleName() + "')");
+            codeWriter.emit("import $L;\n", className.simpleName() + " = require('" + prefix.toString() + className.moduleName() + "')");
             importedTypesCount++;
         }
 
