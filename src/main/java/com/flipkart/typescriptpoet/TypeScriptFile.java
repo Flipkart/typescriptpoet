@@ -49,6 +49,12 @@ public final class TypeScriptFile {
         this.indent = builder.indent;
     }
 
+    public static Builder builder(String packageName, TypeSpec typeSpec) {
+        checkNotNull(typeSpec, "typeSpec == null");
+        checkNotNull(packageName, "packageName == null");
+        return new Builder(packageName, typeSpec);
+    }
+
     public void writeTo(Appendable out) throws IOException {
         // First pass: emit the entire class, just to collect the types we'll need to import.
         CodeWriter importsCollector = new CodeWriter(NULL_APPENDABLE, indent, staticImports);
@@ -105,7 +111,14 @@ public final class TypeScriptFile {
 
         int importedTypesCount = 0;
         for (ClassName className : new TreeSet<>(codeWriter.importedTypes().values())) {
-            codeWriter.emit("import $L;\n", className.simpleName() + " = require('./" + className.moduleName() + "')");
+            StringBuilder prefix = new StringBuilder();
+            String moduleName = className.moduleName();
+            for (int i = 0; i < moduleName.length(); i++) {
+                if (moduleName.charAt(i) == '/') {
+                    prefix.append("../");
+                }
+            }
+            codeWriter.emit("import $L;\n", className.simpleName() + " = require(" + prefix.toString() + className.moduleName() + "')");
             importedTypesCount++;
         }
 
@@ -139,12 +152,6 @@ public final class TypeScriptFile {
         } catch (IOException e) {
             throw new AssertionError();
         }
-    }
-
-    public static Builder builder(String packageName, TypeSpec typeSpec) {
-        checkNotNull(typeSpec, "typeSpec == null");
-        checkNotNull(packageName, "packageName == null");
-        return new Builder(packageName, typeSpec);
     }
 
     public Builder toBuilder() {

@@ -345,12 +345,6 @@ final class CodeWriter {
             return className.canonicalName;
         }
 
-        // If the class is in the same package, we're done.
-        if (Objects.equals(packageName, className.packageName())) {
-            referencedNames.add(className.topLevelClassName().simpleName());
-            return join(".", className.simpleNames());
-        }
-
         // We'll have to use the fully-qualified name. Mark the type as importable for a future pass.
         if (!javadoc) {
             importableType(className);
@@ -465,8 +459,6 @@ final class CodeWriter {
      * collisions, that type's first use is imported.
      */
     Map<String, ClassName> suggestedImports() {
-        Map<String, ClassName> result = new LinkedHashMap<>(importableTypes);
-        result.keySet().removeAll(referencedNames);
-        return result;
+        return new LinkedHashMap<>(importableTypes);
     }
 }
