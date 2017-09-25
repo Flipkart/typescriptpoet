@@ -58,7 +58,14 @@ public final class ClassName extends TypeName implements Comparable<ClassName> {
     }
 
     public String moduleName() {
-        return names.get(0).replace(".", "/");
+        String className = names.get(0).replace(".", "/");
+        StringBuilder prefix = new StringBuilder();
+        for (int i = 0; i < className.length(); i++) {
+            if (className.charAt(i) == '/') {
+                prefix.append("../");
+            }
+        }
+        return prefix + className + "/" + simpleName();
     }
 
     /**

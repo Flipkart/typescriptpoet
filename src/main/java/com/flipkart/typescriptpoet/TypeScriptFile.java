@@ -111,14 +111,7 @@ public final class TypeScriptFile {
 
         int importedTypesCount = 0;
         for (ClassName className : new TreeSet<>(codeWriter.importedTypes().values())) {
-            StringBuilder prefix = new StringBuilder();
-            String moduleName = className.moduleName();
-            for (int i = 0; i < moduleName.length(); i++) {
-                if (moduleName.charAt(i) == '/') {
-                    prefix.append("../");
-                }
-            }
-            codeWriter.emit("import $L;\n", className.simpleName() + " = require('" + prefix.toString() + className.moduleName() + "')");
+            codeWriter.emit("import { $L ;\n", className.simpleName() + " } from '" + className.moduleName() + "'");
             importedTypesCount++;
         }
 
