@@ -11,9 +11,9 @@ import static com.flipkart.typescriptpoet.Util.checkNotNull;
 
 
 public final class ParameterizedTypeName extends TypeName {
-    private final ParameterizedTypeName enclosingType;
     public final ClassName rawType;
     public final List<TypeName> typeArguments;
+    private final ParameterizedTypeName enclosingType;
 
     ParameterizedTypeName(ParameterizedTypeName enclosingType, ClassName rawType,
                           List<TypeName> typeArguments) {
@@ -33,62 +33,6 @@ public final class ParameterizedTypeName extends TypeName {
             checkArgument(!typeArgument.isPrimitive() && typeArgument != VOID,
                     "invalid type parameter: %s", typeArgument);
         }
-    }
-
-    @Override
-    public ParameterizedTypeName annotated(List<AnnotationSpec> annotations) {
-        return new ParameterizedTypeName(
-                enclosingType, rawType, typeArguments, concatAnnotations(annotations));
-    }
-
-    @Override
-    public TypeName withoutAnnotations() {
-        return new ParameterizedTypeName(
-                enclosingType, rawType, typeArguments, new ArrayList<AnnotationSpec>());
-    }
-
-    @Override
-    CodeWriter emit(CodeWriter out) throws IOException {
-        if (enclosingType != null) {
-            enclosingType.emitAnnotations(out);
-            enclosingType.emit(out);
-            out.emit("." + rawType.simpleName());
-        } else {
-            rawType.emitAnnotations(out);
-            rawType.emit(out);
-        }
-        if (!typeArguments.isEmpty()) {
-            out.emitAndIndent("<");
-            boolean firstParameter = true;
-            for (TypeName parameter : typeArguments) {
-                if (!firstParameter) out.emitAndIndent(", ");
-                parameter.emitAnnotations(out);
-                parameter.emit(out);
-                firstParameter = false;
-            }
-            out.emitAndIndent(">");
-        }
-        return out;
-    }
-
-    /**
-     * Returns a new {@link ParameterizedTypeName} instance for the specified {@code name} as nested
-     * inside this class.
-     */
-    public ParameterizedTypeName nestedClass(String name) {
-        checkNotNull(name, "name == null");
-        return new ParameterizedTypeName(this, rawType.nestedClass(name), new ArrayList<TypeName>(),
-                new ArrayList<AnnotationSpec>());
-    }
-
-    /**
-     * Returns a new {@link ParameterizedTypeName} instance for the specified {@code name} as nested
-     * inside this class, with the specified {@code typeArguments}.
-     */
-    public ParameterizedTypeName nestedClass(String name, List<TypeName> typeArguments) {
-        checkNotNull(name, "name == null");
-        return new ParameterizedTypeName(this, rawType.nestedClass(name), typeArguments,
-                new ArrayList<AnnotationSpec>());
     }
 
     /**
@@ -124,5 +68,62 @@ public final class ParameterizedTypeName extends TypeName {
         return (ownerType != null)
                 ? get(ownerType, map).nestedClass(rawType.simpleName(), typeArguments)
                 : new ParameterizedTypeName(null, rawType, typeArguments);
+    }
+
+    @Override
+    public ParameterizedTypeName annotated(List<AnnotationSpec> annotations) {
+        return new ParameterizedTypeName(
+                enclosingType, rawType, typeArguments, concatAnnotations(annotations));
+    }
+
+    @Override
+    public TypeName withoutAnnotations() {
+        return new ParameterizedTypeName(
+                enclosingType, rawType, typeArguments, new ArrayList<AnnotationSpec>());
+    }
+
+    @Override
+    CodeWriter emit(CodeWriter out) throws IOException {
+        if (Util.isList(rawType)) {
+            if (!typeArguments.isEmpty()) {
+                TypeName parameter = typeArguments.get(0);
+                parameter.emitAnnotations(out);
+                parameter.emit(out);
+                out.emit("[]");
+            }
+        } else {
+            if (!typeArguments.isEmpty()) {
+                out.emitAndIndent("<");
+                boolean firstParameter = true;
+                for (TypeName parameter : typeArguments) {
+                    if (!firstParameter) out.emitAndIndent(", ");
+                    parameter.emitAnnotations(out);
+                    parameter.emit(out);
+                    firstParameter = false;
+                }
+                out.emitAndIndent(">");
+            }
+        }
+        return out;
+    }
+
+    /**
+     * Returns a new {@link ParameterizedTypeName} instance for the specified {@code name} as nested
+     * inside this class.
+     */
+    public ParameterizedTypeName nestedClass(String name) {
+        checkNotNull(name, "name == null");
+        return new ParameterizedTypeName(this, rawType.nestedClass(name), new ArrayList<TypeName>(),
+                new ArrayList<AnnotationSpec>());
+    }
+
+    /**
+     * Returns a new {@link ParameterizedTypeName} instance for the specified {@code name} as nested
+     * inside this class, with the specified {@code typeArguments}.
+     */
+    public ParameterizedTypeName nestedClass(String name, List<TypeName> typeArguments) {
+        checkNotNull(name, "name == null");
+        return new ParameterizedTypeName(this, rawType.nestedClass(name), typeArguments,
+                new ArrayList<AnnotationSpec>());
     }
 }

@@ -9,13 +9,13 @@ import static java.lang.Character.isISOControl;
  * bring their own version of Guava.
  */
 final class Util {
-    private Util() {
-    }
-
     /**
      * Modifier.DEFAULT doesn't exist until Java 8, but we want to run on earlier releases.
      */
     static final Modifier DEFAULT = Modifier.DEFAULT;
+
+    private Util() {
+    }
 
     static <K, V> Map<K, List<V>> immutableMultimap(Map<K, List<V>> multimap) {
         LinkedHashMap<K, List<V>> result = new LinkedHashMap<>();
@@ -133,5 +133,11 @@ final class Util {
         }
         result.append('"');
         return result.toString();
+    }
+
+    static boolean isList(ClassName typeName) {
+        String simpleName = typeName.simpleName();
+        return simpleName.equals(ClassName.get(List.class).simpleName()) ||
+                simpleName.equals(ClassName.get(ArrayList.class).simpleName());
     }
 }
