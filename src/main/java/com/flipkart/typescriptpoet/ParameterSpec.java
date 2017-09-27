@@ -1,8 +1,6 @@
 package com.flipkart.typescriptpoet;
 
 import javax.lang.model.SourceVersion;
-import javax.lang.model.element.ExecutableElement;
-import javax.lang.model.element.VariableElement;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -21,12 +19,25 @@ public final class ParameterSpec {
     public final List<AnnotationSpec> annotations;
     public final Set<Modifier> modifiers;
     public final TypeName type;
+    public final boolean isOptional;
 
     private ParameterSpec(Builder builder) {
         this.name = checkNotNull(builder.name, "name == null");
         this.annotations = Util.immutableList(builder.annotations);
         this.modifiers = Util.immutableSet(builder.modifiers);
         this.type = checkNotNull(builder.type, "type == null");
+        this.isOptional = builder.isOptional;
+    }
+
+    public static Builder builder(TypeName type, String name, Modifier... modifiers) {
+        checkNotNull(type, "type == null");
+        checkArgument(SourceVersion.isName(name), "not a valid name: %s", name);
+        return new Builder(type, name)
+                .addModifiers(modifiers);
+    }
+
+    public static Builder builder(Type type, String name, Modifier... modifiers) {
+        return builder(TypeName.get(type), name, modifiers);
     }
 
     public boolean hasModifier(Modifier modifier) {
@@ -40,7 +51,8 @@ public final class ParameterSpec {
             //todo check for varags
 //            codeWriter.emit("$T... $L", TypeName.arrayComponent(type), name);
         } else {
-            codeWriter.emit("$L:$T", name, type);
+            String codeArg = isOptional ? "$L?: $T" : "$L: $T";
+            codeWriter.emit(codeArg, name, type);
         }
     }
 
@@ -69,17 +81,6 @@ public final class ParameterSpec {
         }
     }
 
-    public static Builder builder(TypeName type, String name, Modifier... modifiers) {
-        checkNotNull(type, "type == null");
-        checkArgument(SourceVersion.isName(name), "not a valid name: %s", name);
-        return new Builder(type, name)
-                .addModifiers(modifiers);
-    }
-
-    public static Builder builder(Type type, String name, Modifier... modifiers) {
-        return builder(TypeName.get(type), name, modifiers);
-    }
-
     public Builder toBuilder() {
         return toBuilder(type, name);
     }
@@ -97,6 +98,7 @@ public final class ParameterSpec {
 
         private final List<AnnotationSpec> annotations = new ArrayList<>();
         private final List<Modifier> modifiers = new ArrayList<>();
+        private boolean isOptional;
 
         private Builder(TypeName type, String name) {
             this.type = type;
@@ -118,6 +120,11 @@ public final class ParameterSpec {
 
         public Builder addAnnotation(ClassName annotation) {
             this.annotations.add(AnnotationSpec.builder(annotation).build());
+            return this;
+        }
+
+        public Builder isOptional(boolean optional) {
+            this.isOptional = optional;
             return this;
         }
 

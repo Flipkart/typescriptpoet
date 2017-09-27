@@ -35,6 +35,17 @@ public final class FieldSpec {
         this.isOptional = builder.isOptional;
     }
 
+    public static Builder builder(TypeName type, String name, Modifier... modifiers) {
+        checkNotNull(type, "type == null");
+        checkArgument(SourceVersion.isName(name), "not a valid name: %s", name);
+        return new Builder(type, name)
+                .addModifiers(modifiers);
+    }
+
+    public static Builder builder(Type type, String name, Modifier... modifiers) {
+        return builder(TypeName.get(type), name, modifiers);
+    }
+
     public boolean hasModifier(com.flipkart.typescriptpoet.Modifier modifier) {
         return modifiers.contains(modifier);
     }
@@ -78,17 +89,6 @@ public final class FieldSpec {
         }
     }
 
-    public static Builder builder(TypeName type, String name, Modifier... modifiers) {
-        checkNotNull(type, "type == null");
-        checkArgument(SourceVersion.isName(name), "not a valid name: %s", name);
-        return new Builder(type, name)
-                .addModifiers(modifiers);
-    }
-
-    public static Builder builder(Type type, String name, Modifier... modifiers) {
-        return builder(TypeName.get(type), name, modifiers);
-    }
-
     public Builder toBuilder() {
         Builder builder = new Builder(type, name);
         builder.typescriptDoc.add(typescriptDoc);
@@ -101,12 +101,11 @@ public final class FieldSpec {
     public static final class Builder {
         private final TypeName type;
         private final String name;
-        private boolean isMutable = true;
-        private boolean isOptional = false;
-
         private final CodeBlock.Builder typescriptDoc = CodeBlock.builder();
         private final List<AnnotationSpec> annotations = new ArrayList<>();
         private final List<Modifier> modifiers = new ArrayList<>();
+        private boolean isMutable = true;
+        private boolean isOptional = false;
         private CodeBlock initializer = null;
 
         private Builder(TypeName type, String name) {
