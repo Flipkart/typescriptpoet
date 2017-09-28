@@ -29,7 +29,6 @@ final class CodeWriter {
     private final Set<String> staticImports;
     private final Map<String, ClassName> importedTypes;
     private final Map<String, ClassName> importableTypes = new LinkedHashMap<>();
-    private final Set<String> referencedNames = new LinkedHashSet<>();
     private boolean trailingNewline;
 
     /**
