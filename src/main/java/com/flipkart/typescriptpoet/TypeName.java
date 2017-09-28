@@ -25,15 +25,13 @@ public class TypeName {
     public static final TypeName DOUBLE = new TypeName("number");
     public static final TypeName STRING = new TypeName("string");
     public static final TypeName ANY = new TypeName("any");
+    public static final TypeName OBJECT = new TypeName("object");
 
-    public static final ClassName OBJECT = ClassName.get("java.lang", "Object");
-
+    public final List<AnnotationSpec> annotations;
     /**
      * The name of this type if it is a keyword, or null.
      */
     private final String keyword;
-    public final List<AnnotationSpec> annotations;
-
     /**
      * Lazily-initialized toString of this type name.
      */
@@ -51,81 +49,6 @@ public class TypeName {
     // Package-private constructor to prevent third-party subclasses.
     TypeName(List<AnnotationSpec> annotations) {
         this(null, annotations);
-    }
-
-    public final TypeName annotated(AnnotationSpec... annotations) {
-        return annotated(Arrays.asList(annotations));
-    }
-
-    public TypeName annotated(List<AnnotationSpec> annotations) {
-        Util.checkNotNull(annotations, "annotations == null");
-        return new TypeName(keyword, concatAnnotations(annotations));
-    }
-
-    public TypeName withoutAnnotations() {
-        return new TypeName(keyword);
-    }
-
-    protected final List<AnnotationSpec> concatAnnotations(List<AnnotationSpec> annotations) {
-        List<AnnotationSpec> allAnnotations = new ArrayList<>(this.annotations);
-        allAnnotations.addAll(annotations);
-        return allAnnotations;
-    }
-
-    public boolean isAnnotated() {
-        return !annotations.isEmpty();
-    }
-
-    /**
-     * Returns true if this is a primitive type like {@code int}. Returns false for all other types
-     * types including boxed primitives and {@code void}.
-     */
-    public boolean isPrimitive() {
-        return keyword != null && this != VOID;
-    }
-
-    @Override
-    public final boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null) return false;
-        if (getClass() != o.getClass()) return false;
-        return toString().equals(o.toString());
-    }
-
-    @Override
-    public final int hashCode() {
-        return toString().hashCode();
-    }
-
-    @Override
-    public final String toString() {
-        String result = cachedString;
-        if (result == null) {
-            try {
-                StringBuilder resultBuilder = new StringBuilder();
-                CodeWriter codeWriter = new CodeWriter(resultBuilder);
-                emitAnnotations(codeWriter);
-                emit(codeWriter);
-                result = resultBuilder.toString();
-                cachedString = result;
-            } catch (IOException e) {
-                throw new AssertionError();
-            }
-        }
-        return result;
-    }
-
-    CodeWriter emit(CodeWriter out) throws IOException {
-        if (keyword == null) throw new AssertionError();
-        return out.emitAndIndent(keyword);
-    }
-
-    CodeWriter emitAnnotations(CodeWriter out) throws IOException {
-        for (AnnotationSpec annotation : annotations) {
-            annotation.emit(out, true);
-            out.emit(" ");
-        }
-        return out;
     }
 
     /**
@@ -280,5 +203,80 @@ public class TypeName {
         return type instanceof ArrayTypeName
                 ? ((ArrayTypeName) type).componentType
                 : null;
+    }
+
+    public final TypeName annotated(AnnotationSpec... annotations) {
+        return annotated(Arrays.asList(annotations));
+    }
+
+    public TypeName annotated(List<AnnotationSpec> annotations) {
+        Util.checkNotNull(annotations, "annotations == null");
+        return new TypeName(keyword, concatAnnotations(annotations));
+    }
+
+    public TypeName withoutAnnotations() {
+        return new TypeName(keyword);
+    }
+
+    protected final List<AnnotationSpec> concatAnnotations(List<AnnotationSpec> annotations) {
+        List<AnnotationSpec> allAnnotations = new ArrayList<>(this.annotations);
+        allAnnotations.addAll(annotations);
+        return allAnnotations;
+    }
+
+    public boolean isAnnotated() {
+        return !annotations.isEmpty();
+    }
+
+    /**
+     * Returns true if this is a primitive type like {@code int}. Returns false for all other types
+     * types including boxed primitives and {@code void}.
+     */
+    public boolean isPrimitive() {
+        return keyword != null && this != VOID;
+    }
+
+    @Override
+    public final boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null) return false;
+        if (getClass() != o.getClass()) return false;
+        return toString().equals(o.toString());
+    }
+
+    @Override
+    public final int hashCode() {
+        return toString().hashCode();
+    }
+
+    @Override
+    public final String toString() {
+        String result = cachedString;
+        if (result == null) {
+            try {
+                StringBuilder resultBuilder = new StringBuilder();
+                CodeWriter codeWriter = new CodeWriter(resultBuilder);
+                emitAnnotations(codeWriter);
+                emit(codeWriter);
+                result = resultBuilder.toString();
+                cachedString = result;
+            } catch (IOException e) {
+                throw new AssertionError();
+            }
+        }
+        return result;
+    }
+
+    CodeWriter emit(CodeWriter out) throws IOException {
+        if (keyword == null) throw new AssertionError();
+        return out.emitAndIndent(keyword);
+    }
+
+    CodeWriter emitAnnotations(CodeWriter out) throws IOException {
+        for (AnnotationSpec annotation : annotations) {
+            annotation.emit(out, true);
+            out.emit(" ");
+        }
+        return out;
     }
 }

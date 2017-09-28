@@ -84,26 +84,25 @@ public final class ParameterizedTypeName extends TypeName {
 
     @Override
     CodeWriter emit(CodeWriter out) throws IOException {
-        if (Util.isList(rawType)) {
-            if (!typeArguments.isEmpty()) {
+        if (!typeArguments.isEmpty()) {
+            if (Util.isList(rawType)) {
                 TypeName parameter = typeArguments.get(0);
                 parameter.emitAnnotations(out);
                 parameter.emit(out);
                 out.emit("[]");
-            }
-        } else {
-            if (!typeArguments.isEmpty()) {
-                out.emitAndIndent("<");
-                boolean firstParameter = true;
-                for (TypeName parameter : typeArguments) {
-                    if (!firstParameter) out.emitAndIndent(", ");
-                    parameter.emitAnnotations(out);
-                    parameter.emit(out);
-                    firstParameter = false;
-                }
-                out.emitAndIndent(">");
+            } else if (Util.isMap(rawType) && typeArguments.size() == 2) {
+                out.emit("{ [key: ");
+                TypeName parameter = typeArguments.get(0);
+                parameter.emitAnnotations(out);
+                parameter.emit(out);
+                out.emit("]: ");
+                parameter = typeArguments.get(1);
+                parameter.emitAnnotations(out);
+                parameter.emit(out);
+                out.emit(" }");
             }
         }
+
         return out;
     }
 

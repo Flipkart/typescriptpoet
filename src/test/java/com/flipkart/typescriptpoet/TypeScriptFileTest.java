@@ -32,7 +32,7 @@ public class TypeScriptFileTest {
         ParameterSpec redParaSpec = ParameterSpec.builder(TypeName.STRING, "red").build();
         ParameterSpec greenParaSpec = ParameterSpec.builder(TypeName.STRING, "green").build();
         ParameterSpec blueParaSpec = ParameterSpec.builder(TypeName.STRING, "blue").build();
-        ParameterSpec purpleParaSpec = ParameterSpec.builder(TypeName.INT, "purple").build();
+        ParameterSpec purpleParaSpec = ParameterSpec.builder(TypeName.INT, "purple").isOptional(true).build();
 
         List<ParameterSpec> parameterSpecs = new ArrayList<>();
         parameterSpecs.add(redParaSpec);
