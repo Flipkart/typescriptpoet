@@ -154,9 +154,8 @@ public final class TypeSpec {
                 codeWriter.emitAnnotations(annotations, false);
                 codeWriter.emit("$L", enumName);
                 if (!anonymousTypeArguments.formatParts.isEmpty()) {
-                    codeWriter.emit("(");
+                    codeWriter.emit(" = ");
                     codeWriter.emit(anonymousTypeArguments);
-                    codeWriter.emit(")");
                 }
                 if (fieldSpecs.isEmpty() && methodSpecs.isEmpty() && typeSpecs.isEmpty()) {
                     return; // Avoid unnecessary braces "{}".
@@ -450,7 +449,7 @@ public final class TypeSpec {
         }
 
         public Builder superclass(TypeName superclass) {
-            checkState(this.kind == Kind.CLASS, "only classes have super classes, not " + this.kind);
+//            checkState(this.kind == Kind.CLASS, "only classes have super classes, not " + this.kind);
             checkState(this.superclass == ClassName.OBJECT,
                     "superclass already set to " + this.superclass);
             checkArgument(!superclass.isPrimitive(), "superclass may not be a primitive");
@@ -502,9 +501,6 @@ public final class TypeSpec {
         }
 
         public Builder addField(FieldSpec fieldSpec) {
-            if (kind == Kind.INTERFACE || kind == Kind.ANNOTATION) {
-                requireExactlyOneOf(fieldSpec.modifiers, Modifier.PUBLIC, Modifier.PRIVATE);
-            }
             fieldSpecs.add(fieldSpec);
             return this;
         }
@@ -544,7 +540,6 @@ public final class TypeSpec {
 
         public Builder addMethod(MethodSpec methodSpec) {
             if (kind == Kind.INTERFACE) {
-                requireExactlyOneOf(methodSpec.modifiers, Modifier.ABSTRACT, Modifier.STATIC, Util.DEFAULT);
                 requireExactlyOneOf(methodSpec.modifiers, Modifier.PUBLIC, Modifier.PRIVATE);
             } else if (kind == Kind.ANNOTATION) {
                 checkState(methodSpec.modifiers.equals(kind.implicitMethodModifiers),
