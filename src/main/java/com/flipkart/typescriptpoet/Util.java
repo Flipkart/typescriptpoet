@@ -138,6 +138,7 @@ final class Util {
     static boolean isList(ClassName typeName) {
         String simpleName = typeName.simpleName();
         return simpleName.equals(ClassName.get(List.class).simpleName()) ||
+                simpleName.equals(ClassName.get(Set.class).simpleName()) ||
                 simpleName.equals(ClassName.get(ArrayList.class).simpleName());
     }
 

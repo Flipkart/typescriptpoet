@@ -9,11 +9,12 @@ import java.util.*;
 import static com.flipkart.typescriptpoet.Util.checkArgument;
 import static com.flipkart.typescriptpoet.Util.checkNotNull;
 
-
-public final class ParameterizedTypeName extends TypeName {
+public class ParameterizedTypeName extends TypeName {
     public final ClassName rawType;
     public final List<TypeName> typeArguments;
     private final ParameterizedTypeName enclosingType;
+    private MapParameterizedTypeName mapParameterizedTypeName;
+    private ListParameterizedTypeName listParameterizedTypeName;
 
     ParameterizedTypeName(ParameterizedTypeName enclosingType, ClassName rawType,
                           List<TypeName> typeArguments) {
@@ -26,7 +27,6 @@ public final class ParameterizedTypeName extends TypeName {
         this.rawType = checkNotNull(rawType, "rawType == null");
         this.enclosingType = enclosingType;
         this.typeArguments = Util.immutableList(typeArguments);
-
         checkArgument(!this.typeArguments.isEmpty() || enclosingType != null,
                 "no type arguments: %s", rawType);
         for (TypeName typeArgument : this.typeArguments) {
@@ -70,6 +70,20 @@ public final class ParameterizedTypeName extends TypeName {
                 : new ParameterizedTypeName(null, rawType, typeArguments);
     }
 
+    private MapParameterizedTypeName getMapParameterizedTypeName() {
+        if (mapParameterizedTypeName == null) {
+            mapParameterizedTypeName = new MapParameterizedTypeName(enclosingType, rawType, typeArguments);
+        }
+        return mapParameterizedTypeName;
+    }
+
+    private ListParameterizedTypeName getListParameterizedTypeName() {
+        if (listParameterizedTypeName == null) {
+            listParameterizedTypeName = new ListParameterizedTypeName(enclosingType, rawType, typeArguments);
+        }
+        return listParameterizedTypeName;
+    }
+
     @Override
     public ParameterizedTypeName annotated(List<AnnotationSpec> annotations) {
         return new ParameterizedTypeName(
@@ -84,26 +98,11 @@ public final class ParameterizedTypeName extends TypeName {
 
     @Override
     CodeWriter emit(CodeWriter out) throws IOException {
-        if (!typeArguments.isEmpty()) {
-            if (Util.isList(rawType)) {
-                TypeName parameter = typeArguments.get(0);
-                parameter.emitAnnotations(out);
-                parameter.emit(out);
-                out.emit("[]");
-            } else if (Util.isMap(rawType) && typeArguments.size() == 2) {
-                out.emit("{ [key: ");
-                TypeName parameter = typeArguments.get(0);
-                parameter.emitAnnotations(out);
-                parameter.emit(out);
-                out.emit("]: ");
-                parameter = typeArguments.get(1);
-                parameter.emitAnnotations(out);
-                parameter.emit(out);
-                out.emit(" }");
-            }
+        if (Util.isMap(rawType)) {
+            return getMapParameterizedTypeName().emit(out);
         }
 
-        return out;
+        return getListParameterizedTypeName().emit(out);
     }
 
     /**
