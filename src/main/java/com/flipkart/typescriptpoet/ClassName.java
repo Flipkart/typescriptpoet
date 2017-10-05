@@ -1,6 +1,5 @@
 package com.flipkart.typescriptpoet;
 
-import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.PackageElement;
@@ -31,103 +30,10 @@ public final class ClassName extends TypeName implements Comparable<ClassName> {
 
     private ClassName(List<String> names, List<AnnotationSpec> annotations) {
         super(annotations);
-        for (int i = 1; i < names.size(); i++) {
-            checkArgument(SourceVersion.isName(names.get(i)), "part '%s' is keyword", names.get(i));
-        }
         this.names = Util.immutableList(names);
         this.canonicalName = (names.get(0).isEmpty()
                 ? Util.join(".", names.subList(1, names.size()))
                 : Util.join(".", names));
-    }
-
-    @Override
-    public ClassName annotated(List<AnnotationSpec> annotations) {
-        return new ClassName(names, concatAnnotations(annotations));
-    }
-
-    @Override
-    public TypeName withoutAnnotations() {
-        return new ClassName(names);
-    }
-
-    /**
-     * Returns the package name, like {@code "java.util"} for {@code Map.Entry}.
-     */
-    public String packageName() {
-        return names.get(0);
-    }
-
-    public String moduleName() {
-        return names.get(0).replace(".", "/") + "/" + simpleName();
-    }
-
-    /**
-     * Returns the enclosing class, like {@link Map} for {@code Map.Entry}. Returns null if this class
-     * is not nested in another class.
-     */
-    public ClassName enclosingClassName() {
-        if (names.size() == 2) return null;
-        return new ClassName(names.subList(0, names.size() - 1));
-    }
-
-    /**
-     * Returns the top class in this nesting group. Equivalent to chained calls to {@link
-     * #enclosingClassName()} until the result's enclosing class is null.
-     */
-    public ClassName topLevelClassName() {
-        return new ClassName(names.subList(0, 2));
-    }
-
-    public String reflectionName() {
-        // trivial case: no nested names
-        if (names.size() == 2) {
-            String packageName = packageName();
-            if (packageName.isEmpty()) {
-                return names.get(1);
-            }
-            return packageName + "." + names.get(1);
-        }
-        // concat top level class name and nested names
-        StringBuilder builder = new StringBuilder();
-        builder.append(topLevelClassName());
-        for (String name : simpleNames().subList(1, simpleNames().size())) {
-            builder.append('$').append(name);
-        }
-        return builder.toString();
-    }
-
-    /**
-     * Returns a new {@link ClassName} instance for the specified {@code name} as nested inside this
-     * class.
-     */
-    public ClassName nestedClass(String name) {
-        checkNotNull(name, "name == null");
-        List<String> result = new ArrayList<>(names.size() + 1);
-        result.addAll(names);
-        result.add(name);
-        return new ClassName(result);
-    }
-
-    public List<String> simpleNames() {
-        return names.subList(1, names.size());
-    }
-
-    /**
-     * Returns a class that shares the same enclosing package or class. If this class is enclosed by
-     * another class, this is equivalent to {@code enclosingClassName().nestedClass(name)}. Otherwise
-     * it is equivalent to {@code get(packageName(), name)}.
-     */
-    public ClassName peerClass(String name) {
-        List<String> result = new ArrayList<>(names);
-        result.set(result.size() - 1, name);
-        return new ClassName(result);
-    }
-
-    /**
-     * Returns the simple name of this class, like {@code "Entry"} for {@link Map.Entry}.
-     */
-    public String simpleName() {
-        return names.get(names.size() - 1);
     }
 
     public static ClassName get(Class<?> clazz) {
@@ -222,6 +128,96 @@ public final class ClassName extends TypeName implements Comparable<ClassName> {
             type = type.getEnclosingElement();
         }
         return (PackageElement) type;
+    }
+
+    @Override
+    public ClassName annotated(List<AnnotationSpec> annotations) {
+        return new ClassName(names, concatAnnotations(annotations));
+    }
+
+    @Override
+    public TypeName withoutAnnotations() {
+        return new ClassName(names);
+    }
+
+    /**
+     * Returns the package name, like {@code "java.util"} for {@code Map.Entry}.
+     */
+    public String packageName() {
+        return names.get(0);
+    }
+
+    public String moduleName() {
+        return names.get(0).replace(".", "/") + "/" + simpleName();
+    }
+
+    /**
+     * Returns the enclosing class, like {@link Map} for {@code Map.Entry}. Returns null if this class
+     * is not nested in another class.
+     */
+    public ClassName enclosingClassName() {
+        if (names.size() == 2) return null;
+        return new ClassName(names.subList(0, names.size() - 1));
+    }
+
+    /**
+     * Returns the top class in this nesting group. Equivalent to chained calls to {@link
+     * #enclosingClassName()} until the result's enclosing class is null.
+     */
+    public ClassName topLevelClassName() {
+        return new ClassName(names.subList(0, 2));
+    }
+
+    public String reflectionName() {
+        // trivial case: no nested names
+        if (names.size() == 2) {
+            String packageName = packageName();
+            if (packageName.isEmpty()) {
+                return names.get(1);
+            }
+            return packageName + "." + names.get(1);
+        }
+        // concat top level class name and nested names
+        StringBuilder builder = new StringBuilder();
+        builder.append(topLevelClassName());
+        for (String name : simpleNames().subList(1, simpleNames().size())) {
+            builder.append('$').append(name);
+        }
+        return builder.toString();
+    }
+
+    /**
+     * Returns a new {@link ClassName} instance for the specified {@code name} as nested inside this
+     * class.
+     */
+    public ClassName nestedClass(String name) {
+        checkNotNull(name, "name == null");
+        List<String> result = new ArrayList<>(names.size() + 1);
+        result.addAll(names);
+        result.add(name);
+        return new ClassName(result);
+    }
+
+    public List<String> simpleNames() {
+        return names.subList(1, names.size());
+    }
+
+    /**
+     * Returns a class that shares the same enclosing package or class. If this class is enclosed by
+     * another class, this is equivalent to {@code enclosingClassName().nestedClass(name)}. Otherwise
+     * it is equivalent to {@code get(packageName(), name)}.
+     */
+    public ClassName peerClass(String name) {
+        List<String> result = new ArrayList<>(names);
+        result.set(result.size() - 1, name);
+        return new ClassName(result);
+    }
+
+    /**
+     * Returns the simple name of this class, like {@code "Entry"} for {@link Map.Entry}.
+     */
+    public String simpleName() {
+        return names.get(names.size() - 1);
     }
 
     @Override
