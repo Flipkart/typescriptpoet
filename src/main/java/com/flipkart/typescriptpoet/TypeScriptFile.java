@@ -33,6 +33,7 @@ public final class TypeScriptFile {
         }
     };
 
+    private static final String TYPESCRIPT_EXTENSION = ".ts";
     public final CodeBlock fileComment;
     public final String packageName;
     public final TypeSpec typeSpec;
@@ -69,7 +70,7 @@ public final class TypeScriptFile {
     /**
      * Writes this to {@code directory} as UTF-8 using the standard directory structure.
      */
-    public void writeTo(Path directory) throws IOException {
+    public void writeTo(Path directory, String fileExtension) throws IOException {
         checkArgument(Files.notExists(directory) || Files.isDirectory(directory),
                 "path %s exists but is not a directory.", directory);
 
@@ -82,7 +83,7 @@ public final class TypeScriptFile {
             Files.createDirectories(outputDirectory);
         }
 
-        Path outputPath = outputDirectory.resolve(typeSpec.name + ".ts");
+        Path outputPath = outputDirectory.resolve(typeSpec.name + (fileExtension != null ? fileExtension : ".ts"));
         try (Writer writer = new OutputStreamWriter(Files.newOutputStream(outputPath), UTF_8)) {
             writeTo(writer);
         }
@@ -91,8 +92,15 @@ public final class TypeScriptFile {
     /**
      * Writes this to {@code directory} as UTF-8 using the standard directory structure.
      */
+    public void writeTo(File directory, String fileExtension) throws IOException {
+        writeTo(directory.toPath(), fileExtension);
+    }
+
+    /**
+     * Writes this to {@code directory} as UTF-8 using the standard directory structure.
+     */
     public void writeTo(File directory) throws IOException {
-        writeTo(directory.toPath());
+        writeTo(directory.toPath(), TYPESCRIPT_EXTENSION);
     }
 
     private void emit(CodeWriter codeWriter) throws IOException {
