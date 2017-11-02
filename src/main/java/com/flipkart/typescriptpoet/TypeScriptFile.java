@@ -6,6 +6,7 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 
 import static com.flipkart.typescriptpoet.Util.checkArgument;
@@ -40,6 +41,7 @@ public final class TypeScriptFile {
     public final boolean skipJavaLangImports;
     private final Set<String> staticImports;
     private final String indent;
+    private final Path currentPath;
 
     private TypeScriptFile(Builder builder) {
         this.fileComment = builder.fileComment.build();
@@ -48,6 +50,7 @@ public final class TypeScriptFile {
         this.skipJavaLangImports = builder.skipJavaLangImports;
         this.staticImports = Util.immutableSet(builder.staticImports);
         this.indent = builder.indent;
+        this.currentPath = Util.absolutePath(packageName, typeSpec.name);
     }
 
     public static Builder builder(String packageName, TypeSpec typeSpec) {
@@ -119,7 +122,9 @@ public final class TypeScriptFile {
 
         int importedTypesCount = 0;
         for (ClassName className : new TreeSet<>(codeWriter.importedTypes().values())) {
-            codeWriter.emit("import { $L ;\n", className.simpleName() + " } from '" + className.moduleName() + "'");
+            Path importPath = Paths.get(className.moduleName());
+            String relativePath = Util.getRelativePath(currentPath, importPath);
+            codeWriter.emit("import { $L ;\n", className.simpleName() + " } from '" + relativePath + "'");
             importedTypesCount++;
         }
 

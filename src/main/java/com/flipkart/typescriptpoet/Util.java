@@ -1,5 +1,7 @@
 package com.flipkart.typescriptpoet;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 
 import static java.lang.Character.isISOControl;
@@ -146,5 +148,33 @@ final class Util {
         String simpleName = typeName.simpleName();
         return simpleName.equals(ClassName.get(Map.class).simpleName()) ||
                 simpleName.equals(ClassName.get(HashMap.class).simpleName());
+    }
+
+    static Path absolutePath(String packageName, String fileName) {
+        String currentClass = packageName + "." + fileName;
+        currentClass = currentClass.replace(".", "/");
+        return Paths.get(currentClass);
+    }
+
+    static String getRelativePath(Path currentPath, Path importPath) {
+        Path path = currentPath.relativize(importPath);
+        String toString = path.toFile().toString();
+
+        int dotIndex = toString.indexOf("..");
+        boolean dotMoreThanOnce = dotIndex != -1 && dotIndex != toString.lastIndexOf("..");
+
+        int slashIndex = toString.indexOf("/");
+        boolean slashMoreThanOnce = slashIndex != -1 && slashIndex != toString.lastIndexOf("/");
+
+        /*
+         * This is a hack. We are checking if the occurunce of '..' & '/' is only once, which means the file exists in
+         * the same directory. In such case we will have to replace '../' with './'.
+         * Otherwise return the original file path.
+         */
+        if (!dotMoreThanOnce && !slashMoreThanOnce) {
+            return toString.replaceFirst("../", "./");
+        }
+
+        return toString;
     }
 }

@@ -78,10 +78,6 @@ public final class TypeSpec {
         this.originatingElements = Collections.emptyList();
     }
 
-    public boolean hasModifier(Modifier modifier) {
-        return modifiers.contains(modifier);
-    }
-
     public static Builder classBuilder(String name) {
         return new Builder(Kind.CLASS, checkNotNull(name, "name == null"), null);
     }
@@ -122,6 +118,10 @@ public final class TypeSpec {
 
     public static Builder annotationBuilder(ClassName className) {
         return annotationBuilder(checkNotNull(className, "className == null").simpleName());
+    }
+
+    public boolean hasModifier(Modifier modifier) {
+        return modifiers.contains(modifier);
     }
 
     public Builder toBuilder() {
@@ -174,7 +174,8 @@ public final class TypeSpec {
                 codeWriter.emitAnnotations(annotations, false);
                 codeWriter.emitModifiers(modifiers, Util.union(implicitModifiers, kind.asMemberModifiers));
                 if (kind == Kind.ANNOTATION) {
-                    codeWriter.emit("$L $L", "@interface", name);
+                    codeWriter.emit("function $L", name);
+                    codeWriter.emit("(target)");
                 } else {
                     codeWriter.emit("$L $L", kind.name().toLowerCase(Locale.US), name);
                 }
@@ -375,7 +376,6 @@ public final class TypeSpec {
         private final List<AnnotationSpec> annotations = new ArrayList<>();
         private final List<Modifier> modifiers = new ArrayList<>();
         private final List<TypeVariableName> typeVariables = new ArrayList<>();
-        private TypeName superclass = ClassName.OBJECT;
         private final List<TypeName> superinterfaces = new ArrayList<>();
         private final Map<String, TypeSpec> enumConstants = new LinkedHashMap<>();
         private final List<FieldSpec> fieldSpecs = new ArrayList<>();
@@ -384,6 +384,7 @@ public final class TypeSpec {
         private final List<MethodSpec> methodSpecs = new ArrayList<>();
         private final List<TypeSpec> typeSpecs = new ArrayList<>();
         private final List<Element> originatingElements = new ArrayList<>();
+        private TypeName superclass = ClassName.OBJECT;
 
         private Builder(Kind kind, String name,
                         CodeBlock anonymousTypeArguments) {
