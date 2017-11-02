@@ -158,23 +158,7 @@ final class Util {
 
     static String getRelativePath(Path currentPath, Path importPath) {
         Path path = currentPath.relativize(importPath);
-        String toString = path.toFile().toString();
-
-        int dotIndex = toString.indexOf("..");
-        boolean dotMoreThanOnce = dotIndex != -1 && dotIndex != toString.lastIndexOf("..");
-
-        int slashIndex = toString.indexOf("/");
-        boolean slashMoreThanOnce = slashIndex != -1 && slashIndex != toString.lastIndexOf("/");
-
-        /*
-         * This is a hack. We are checking if the occurunce of '..' & '/' is only once, which means the file exists in
-         * the same directory. In such case we will have to replace '../' with './'.
-         * Otherwise return the original file path.
-         */
-        if (!dotMoreThanOnce && !slashMoreThanOnce) {
-            return toString.replaceFirst("../", "./");
-        }
-
-        return toString;
+        String pathString = path.toFile().toString();
+        return pathString.substring(1, pathString.length());
     }
 }
