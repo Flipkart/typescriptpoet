@@ -8,35 +8,33 @@ import static com.flipkart.typescriptpoet.Util.*;
 
 
 /**
- * Converts a {@link JavaFile} to a string suitable to both human- and javac-consumption. This
+ * Converts a {@link TypeScriptFile} to a string suitable to both human- and javac-consumption. This
  * honors imports, indentation, and deferred variable names.
  */
 final class CodeWriter {
     /**
      * Sentinel value that indicates that no user-provided package has been set.
      */
-    private static final String NO_PACKAGE = new String();
+    private static final String NO_PACKAGE = "";
 
     private final String indent;
     private final LineWrapper out;
-    private int indentLevel;
-
-    private boolean javadoc = false;
-    private boolean comment = false;
-    private String packageName = NO_PACKAGE;
     private final List<TypeSpec> typeSpecStack = new ArrayList<>();
     private final Set<String> staticImportClassNames;
     private final Set<String> staticImports;
     private final Map<String, ClassName> importedTypes;
     private final Map<String, ClassName> importableTypes = new LinkedHashMap<>();
-    private boolean trailingNewline;
-
     /**
      * When emitting a statement, this is the line of the statement currently being written. The first
      * line of a statement is indented normally and subsequent wrapped lines are double-indented. This
      * is -1 when the currently-written line isn't part of a statement.
      */
     int statementLine = -1;
+    private int indentLevel;
+    private boolean javadoc = false;
+    private boolean comment = false;
+    private String packageName = NO_PACKAGE;
+    private boolean trailingNewline;
 
     CodeWriter(Appendable out) {
         this(out, "  ", Collections.<String>emptySet());
@@ -56,6 +54,16 @@ final class CodeWriter {
         for (String signature : staticImports) {
             staticImportClassNames.add(signature.substring(0, signature.lastIndexOf('.')));
         }
+    }
+
+    private static String extractMemberName(String part) {
+        checkArgument(Character.isJavaIdentifierStart(part.charAt(0)), "not an identifier: %s", part);
+        for (int i = 1; i <= part.length(); i++) {
+            if (!SourceVersion.isIdentifier(part.substring(0, i))) {
+                return part.substring(0, i - 1);
+            }
+        }
+        return part;
     }
 
     public Map<String, ClassName> importedTypes() {
@@ -278,16 +286,6 @@ final class CodeWriter {
     public CodeWriter emitWrappingSpace() throws IOException {
         out.wrappingSpace(indentLevel + 2);
         return this;
-    }
-
-    private static String extractMemberName(String part) {
-        checkArgument(Character.isJavaIdentifierStart(part.charAt(0)), "not an identifier: %s", part);
-        for (int i = 1; i <= part.length(); i++) {
-            if (!SourceVersion.isIdentifier(part.substring(0, i))) {
-                return part.substring(0, i - 1);
-            }
-        }
-        return part;
     }
 
     private boolean emitStaticImportMember(String canonical, String part) throws IOException {

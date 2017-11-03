@@ -1,6 +1,5 @@
 package com.flipkart.typescriptpoet;
 
-
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.TypeParameterElement;
@@ -14,18 +13,19 @@ import java.lang.reflect.TypeVariable;
 import java.util.*;
 
 public class TypeName {
-    public static final TypeName VOID = new TypeName("void");
-    public static final TypeName BOOLEAN = new TypeName("boolean");
-    public static final TypeName BYTE = new TypeName("number");
-    public static final TypeName SHORT = new TypeName("number");
-    public static final TypeName INT = new TypeName("number");
-    public static final TypeName LONG = new TypeName("number");
-    public static final TypeName CHAR = new TypeName("char");
-    public static final TypeName FLOAT = new TypeName("number");
-    public static final TypeName DOUBLE = new TypeName("number");
-    public static final TypeName STRING = new TypeName("string");
-    public static final TypeName ANY = new TypeName("any");
-    public static final TypeName OBJECT = new TypeName("object");
+    static final TypeName VOID = new TypeName("void");
+    static final TypeName INT = new TypeName("number");
+    static final TypeName STRING = new TypeName("string");
+    static final TypeName OBJECT = new TypeName("object");
+
+    private static final TypeName BOOLEAN = new TypeName("boolean");
+    private static final TypeName BYTE = new TypeName("number");
+    private static final TypeName SHORT = new TypeName("number");
+    private static final TypeName LONG = new TypeName("number");
+    private static final TypeName CHAR = new TypeName("char");
+    private static final TypeName FLOAT = new TypeName("number");
+    private static final TypeName DOUBLE = new TypeName("number");
+    private static final TypeName ANY = new TypeName("any");
 
     public final List<AnnotationSpec> annotations;
     /**
@@ -127,7 +127,7 @@ public class TypeName {
 
             @Override
             public TypeName visitWildcard(javax.lang.model.type.WildcardType t, Void p) {
-//                return WildcardTypeName.get(t, typeVariables);
+                //return WildcardTypeName.get(t, typeVariables);
                 // TODO: 11/09/17 handle
                 return null;
             }
@@ -238,10 +238,7 @@ public class TypeName {
 
     @Override
     public final boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null) return false;
-        if (getClass() != o.getClass()) return false;
-        return toString().equals(o.toString());
+        return this == o || o != null && getClass() == o.getClass() && toString().equals(o.toString());
     }
 
     @Override

@@ -8,22 +8,22 @@ import java.util.*;
 
 import static com.flipkart.typescriptpoet.Util.*;
 
-public final class MethodSpec {
-    static final String CONSTRUCTOR = "constructor";
+public final class FunctionSpec {
+    private static final String CONSTRUCTOR = "constructor";
 
     public final String name;
-    public final CodeBlock javadoc;
     public final List<AnnotationSpec> annotations;
-    public final Set<Modifier> modifiers;
-    public final List<TypeVariableName> typeVariables;
-    public final TypeName returnType;
-    public final List<ParameterSpec> parameters;
-    public final boolean varargs;
-    public final List<TypeName> exceptions;
     public final CodeBlock code;
-    public final CodeBlock defaultValue;
+    final Set<Modifier> modifiers;
+    final CodeBlock defaultValue;
+    private final CodeBlock javadoc;
+    private final List<TypeVariableName> typeVariables;
+    private final TypeName returnType;
+    private final List<ParameterSpec> parameters;
+    private final boolean varargs;
+    private final List<TypeName> exceptions;
 
-    private MethodSpec(Builder builder) {
+    private FunctionSpec(Builder builder) {
         CodeBlock code = builder.code.build();
         checkArgument(code.isEmpty() || !builder.modifiers.contains(Modifier.ABSTRACT),
                 "abstract method %s cannot have code", builder.name);
@@ -41,6 +41,14 @@ public final class MethodSpec {
         this.exceptions = Util.immutableList(builder.exceptions);
         this.defaultValue = builder.defaultValue;
         this.code = code;
+    }
+
+    static Builder methodBuilder(String name) {
+        return new Builder(name);
+    }
+
+    public static Builder constructorBuilder() {
+        return new Builder(CONSTRUCTOR);
     }
 
     private boolean lastParameterIsArray(List<ParameterSpec> parameters) {
@@ -107,11 +115,11 @@ public final class MethodSpec {
         }
     }
 
-    public boolean hasModifier(Modifier modifier) {
+    boolean hasModifier(Modifier modifier) {
         return modifiers.contains(modifier);
     }
 
-    public boolean isConstructor() {
+    boolean isConstructor() {
         return name.equals(CONSTRUCTOR);
     }
 
@@ -140,14 +148,6 @@ public final class MethodSpec {
         }
     }
 
-    public static Builder methodBuilder(String name) {
-        return new Builder(name);
-    }
-
-    public static Builder constructorBuilder() {
-        return new Builder(CONSTRUCTOR);
-    }
-
     public Builder toBuilder() {
         Builder builder = new Builder(name);
         builder.javadoc.add(javadoc);
@@ -169,11 +169,11 @@ public final class MethodSpec {
         private final CodeBlock.Builder javadoc = CodeBlock.builder();
         private final List<AnnotationSpec> annotations = new ArrayList<>();
         private final List<Modifier> modifiers = new ArrayList<>();
-        private List<TypeVariableName> typeVariables = new ArrayList<>();
-        private TypeName returnType;
         private final List<ParameterSpec> parameters = new ArrayList<>();
         private final Set<TypeName> exceptions = new LinkedHashSet<>();
         private final CodeBlock.Builder code = CodeBlock.builder();
+        private List<TypeVariableName> typeVariables = new ArrayList<>();
+        private TypeName returnType;
         private boolean varargs;
         private CodeBlock defaultValue;
 
@@ -372,8 +372,8 @@ public final class MethodSpec {
             return this;
         }
 
-        public MethodSpec build() {
-            return new MethodSpec(this);
+        public FunctionSpec build() {
+            return new FunctionSpec(this);
         }
     }
 }

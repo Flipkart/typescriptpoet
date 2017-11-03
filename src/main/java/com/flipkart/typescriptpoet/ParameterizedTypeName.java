@@ -10,8 +10,8 @@ import static com.flipkart.typescriptpoet.Util.checkArgument;
 import static com.flipkart.typescriptpoet.Util.checkNotNull;
 
 public class ParameterizedTypeName extends TypeName {
-    public final ClassName rawType;
-    public final List<TypeName> typeArguments;
+    final ClassName rawType;
+    final List<TypeName> typeArguments;
     private final ParameterizedTypeName enclosingType;
     private MapParameterizedTypeName mapParameterizedTypeName;
     private ListParameterizedTypeName listParameterizedTypeName;
@@ -33,6 +33,8 @@ public class ParameterizedTypeName extends TypeName {
             checkArgument(!typeArgument.isPrimitive() && typeArgument != VOID,
                     "invalid type parameter: %s", typeArgument);
         }
+        this.mapParameterizedTypeName = new MapParameterizedTypeName(enclosingType, rawType, typeArguments);
+        this.listParameterizedTypeName = new ListParameterizedTypeName(enclosingType, rawType, typeArguments);
     }
 
     /**
@@ -70,20 +72,6 @@ public class ParameterizedTypeName extends TypeName {
                 : new ParameterizedTypeName(null, rawType, typeArguments);
     }
 
-    private MapParameterizedTypeName getMapParameterizedTypeName() {
-        if (mapParameterizedTypeName == null) {
-            mapParameterizedTypeName = new MapParameterizedTypeName(enclosingType, rawType, typeArguments);
-        }
-        return mapParameterizedTypeName;
-    }
-
-    private ListParameterizedTypeName getListParameterizedTypeName() {
-        if (listParameterizedTypeName == null) {
-            listParameterizedTypeName = new ListParameterizedTypeName(enclosingType, rawType, typeArguments);
-        }
-        return listParameterizedTypeName;
-    }
-
     @Override
     public ParameterizedTypeName annotated(List<AnnotationSpec> annotations) {
         return new ParameterizedTypeName(
@@ -99,10 +87,10 @@ public class ParameterizedTypeName extends TypeName {
     @Override
     CodeWriter emit(CodeWriter out) throws IOException {
         if (Util.isMap(rawType)) {
-            return getMapParameterizedTypeName().emit(out);
+            return mapParameterizedTypeName.emit(out);
         }
 
-        return getListParameterizedTypeName().emit(out);
+        return listParameterizedTypeName.emit(out);
     }
 
     /**
@@ -123,5 +111,72 @@ public class ParameterizedTypeName extends TypeName {
         checkNotNull(name, "name == null");
         return new ParameterizedTypeName(this, rawType.nestedClass(name), typeArguments,
                 new ArrayList<AnnotationSpec>());
+    }
+
+    private static final class ListParameterizedTypeName extends ParameterizedTypeName {
+
+        ListParameterizedTypeName(ParameterizedTypeName enclosingType, ClassName rawType, List<TypeName> typeArguments) {
+            super(enclosingType, rawType, typeArguments);
+        }
+
+        public static ParameterizedTypeName get(ClassName rawType, TypeName... typeArguments) {
+            return new ListParameterizedTypeName(null, rawType, Arrays.asList(typeArguments));
+        }
+
+        @Override
+        CodeWriter emit(CodeWriter out) throws IOException {
+            boolean firstParameterInType;
+            boolean lastParameterInType;
+
+            if (!Util.isList(rawType)) {
+                firstParameterInType = false;
+                lastParameterInType = false;
+                rawType.emitAnnotations(out);
+                rawType.emit(out);
+            } else {
+                firstParameterInType = true;
+                lastParameterInType = true;
+            }
+
+            for (TypeName parameter : typeArguments) {
+                if (!firstParameterInType) out.emitAndIndent("<");
+                parameter.emitAnnotations(out);
+                parameter.emit(out);
+                if (!firstParameterInType) out.emitAndIndent(">");
+                firstParameterInType = false;
+            }
+
+            if (!firstParameterInType && lastParameterInType) {
+                out.emitAndIndent("[]");
+            }
+
+            return out;
+        }
+    }
+
+    public static final class MapParameterizedTypeName extends ParameterizedTypeName {
+
+        MapParameterizedTypeName(ParameterizedTypeName enclosingType, ClassName rawType, List<TypeName> typeArguments) {
+            super(enclosingType, rawType, typeArguments);
+        }
+
+        public static ParameterizedTypeName get(ClassName rawType, TypeName... typeArguments) {
+            return new MapParameterizedTypeName(null, rawType, Arrays.asList(typeArguments));
+        }
+
+        @Override
+        CodeWriter emit(CodeWriter out) throws IOException {
+            out.emit("{ [key: ");
+            TypeName parameter = typeArguments.get(0);
+            parameter.emitAnnotations(out);
+            parameter.emit(out);
+            out.emit("]: ");
+            parameter = typeArguments.get(1);
+            parameter.emitAnnotations(out);
+            parameter.emit(out);
+            out.emit(" }");
+
+            return out;
+        }
     }
 }

@@ -41,7 +41,7 @@ public class TypeScriptFileTest {
         parameterSpecs.add(purpleParaSpec);
 
         CodeBlock.Builder codeBuilder = CodeBlock.builder();
-        MethodSpec.Builder initFunction = MethodSpec.methodBuilder("constructor").addJavadoc("//constructor");
+        FunctionSpec.Builder initFunction = FunctionSpec.methodBuilder("constructor").addJavadoc("//constructor");
 
         for (ParameterSpec parameterSpec : parameterSpecs) {
             codeBuilder.addStatement("this.$N = $N", parameterSpec, parameterSpec);
@@ -51,7 +51,7 @@ public class TypeScriptFileTest {
         initFunction.addCode(codeBuilder.build());
         typeSpecBuilder.addMethod(initFunction.build());
 
-        MethodSpec.Builder classFunction = MethodSpec.methodBuilder("disp").addJavadoc("//function").returns(TypeName.VOID);
+        FunctionSpec.Builder classFunction = FunctionSpec.methodBuilder("disp").addJavadoc("//function").returns(TypeName.VOID);
         codeBuilder = CodeBlock.builder();
         codeBuilder.addStatement("console.log(\"Engine is  :  \"+ this.engine)");
 
@@ -59,7 +59,7 @@ public class TypeScriptFileTest {
         typeSpecBuilder.addMethod(classFunction.build());
 
 
-        classFunction = MethodSpec.methodBuilder("setDisp").addJavadoc("//function");
+        classFunction = FunctionSpec.methodBuilder("setDisp").addJavadoc("//function");
         codeBuilder = CodeBlock.builder();
         codeBuilder.addStatement("console.log(\"Engine is  :  \"+ this.engine)");
 

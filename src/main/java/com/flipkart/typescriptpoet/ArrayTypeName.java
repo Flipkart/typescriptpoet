@@ -13,7 +13,7 @@ import java.util.Map;
 import static com.flipkart.typescriptpoet.Util.checkNotNull;
 
 public final class ArrayTypeName extends TypeName {
-    public final TypeName componentType;
+    final TypeName componentType;
 
     private ArrayTypeName(TypeName componentType) {
         this(componentType, new ArrayList<AnnotationSpec>());
@@ -22,21 +22,6 @@ public final class ArrayTypeName extends TypeName {
     private ArrayTypeName(TypeName componentType, List<AnnotationSpec> annotations) {
         super(annotations);
         this.componentType = checkNotNull(componentType, "rawType == null");
-    }
-
-    @Override
-    public ArrayTypeName annotated(List<AnnotationSpec> annotations) {
-        return new ArrayTypeName(componentType, concatAnnotations(annotations));
-    }
-
-    @Override
-    public TypeName withoutAnnotations() {
-        return new ArrayTypeName(componentType);
-    }
-
-    @Override
-    CodeWriter emit(CodeWriter out) throws IOException {
-        return out.emit("$T[]", componentType);
     }
 
     /**
@@ -74,5 +59,20 @@ public final class ArrayTypeName extends TypeName {
 
     static ArrayTypeName get(GenericArrayType type, Map<Type, TypeVariableName> map) {
         return ArrayTypeName.of(get(type.getGenericComponentType(), map));
+    }
+
+    @Override
+    public ArrayTypeName annotated(List<AnnotationSpec> annotations) {
+        return new ArrayTypeName(componentType, concatAnnotations(annotations));
+    }
+
+    @Override
+    public TypeName withoutAnnotations() {
+        return new ArrayTypeName(componentType);
+    }
+
+    @Override
+    CodeWriter emit(CodeWriter out) throws IOException {
+        return out.emit("$T[]", componentType);
     }
 }

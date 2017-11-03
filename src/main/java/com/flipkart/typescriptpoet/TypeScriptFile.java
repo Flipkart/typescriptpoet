@@ -122,7 +122,7 @@ public final class TypeScriptFile {
 
         int importedTypesCount = 0;
         for (ClassName className : new TreeSet<>(codeWriter.importedTypes().values())) {
-            Path importPath = Paths.get(className.moduleName());
+            Path importPath = Paths.get(className.fullyQualifiedName());
             String relativePath = Util.getRelativePath(currentPath, importPath);
             codeWriter.emit("import { $L ;\n", className.simpleName() + " } from '" + relativePath + "'");
             importedTypesCount++;

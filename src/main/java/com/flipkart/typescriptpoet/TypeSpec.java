@@ -12,22 +12,22 @@ import static com.flipkart.typescriptpoet.Util.*;
  * A generated class, interface, or enum declaration.
  */
 public final class TypeSpec {
-    public final Kind kind;
     public final String name;
-    public final CodeBlock anonymousTypeArguments;
-    public final CodeBlock javadoc;
     public final List<AnnotationSpec> annotations;
-    public final Set<Modifier> modifiers;
-    public final List<TypeVariableName> typeVariables;
-    public final TypeName superclass;
-    public final List<TypeName> superinterfaces;
-    public final Map<String, TypeSpec> enumConstants;
-    public final List<FieldSpec> fieldSpecs;
-    public final CodeBlock staticBlock;
-    public final CodeBlock initializerBlock;
-    public final List<MethodSpec> methodSpecs;
-    public final List<TypeSpec> typeSpecs;
-    public final List<Element> originatingElements;
+    final CodeBlock anonymousTypeArguments;
+    final Set<Modifier> modifiers;
+    final List<TypeSpec> typeSpecs;
+    private final Kind kind;
+    private final CodeBlock javadoc;
+    private final List<TypeVariableName> typeVariables;
+    private final TypeName superclass;
+    private final List<TypeName> superinterfaces;
+    private final Map<String, TypeSpec> enumConstants;
+    private final List<FieldSpec> fieldSpecs;
+    private final CodeBlock staticBlock;
+    private final CodeBlock initializerBlock;
+    private final List<FunctionSpec> functionSpecs;
+    private final List<Element> originatingElements;
 
     private TypeSpec(Builder builder) {
         this.kind = builder.kind;
@@ -43,7 +43,7 @@ public final class TypeSpec {
         this.fieldSpecs = Util.immutableList(builder.fieldSpecs);
         this.staticBlock = builder.staticBlock.build();
         this.initializerBlock = builder.initializerBlock.build();
-        this.methodSpecs = Util.immutableList(builder.methodSpecs);
+        this.functionSpecs = Util.immutableList(builder.functionSpecs);
         this.typeSpecs = Util.immutableList(builder.typeSpecs);
 
         List<Element> originatingElementsMutable = new ArrayList<>();
@@ -73,7 +73,7 @@ public final class TypeSpec {
         this.fieldSpecs = Collections.emptyList();
         this.staticBlock = type.staticBlock;
         this.initializerBlock = type.initializerBlock;
-        this.methodSpecs = Collections.emptyList();
+        this.functionSpecs = Collections.emptyList();
         this.typeSpecs = Collections.emptyList();
         this.originatingElements = Collections.emptyList();
     }
@@ -134,7 +134,7 @@ public final class TypeSpec {
         builder.superinterfaces.addAll(superinterfaces);
         builder.enumConstants.putAll(enumConstants);
         builder.fieldSpecs.addAll(fieldSpecs);
-        builder.methodSpecs.addAll(methodSpecs);
+        builder.functionSpecs.addAll(functionSpecs);
         builder.typeSpecs.addAll(typeSpecs);
         builder.initializerBlock.add(initializerBlock);
         builder.staticBlock.add(staticBlock);
@@ -157,7 +157,7 @@ public final class TypeSpec {
                     codeWriter.emit(" = ");
                     codeWriter.emit(anonymousTypeArguments);
                 }
-                if (fieldSpecs.isEmpty() && methodSpecs.isEmpty() && typeSpecs.isEmpty()) {
+                if (fieldSpecs.isEmpty() && functionSpecs.isEmpty() && typeSpecs.isEmpty()) {
                     return; // Avoid unnecessary braces "{}".
                 }
                 codeWriter.emit(" {\n");
@@ -230,7 +230,7 @@ public final class TypeSpec {
                 firstMember = false;
                 if (i.hasNext()) {
                     codeWriter.emit(",\n");
-                } else if (!fieldSpecs.isEmpty() || !methodSpecs.isEmpty() || !typeSpecs.isEmpty()) {
+                } else if (!fieldSpecs.isEmpty() || !functionSpecs.isEmpty() || !typeSpecs.isEmpty()) {
                     codeWriter.emit(";\n");
                 } else {
                     codeWriter.emit("\n");
@@ -267,18 +267,18 @@ public final class TypeSpec {
             }
 
             // Constructors.
-            for (MethodSpec methodSpec : methodSpecs) {
-                if (!methodSpec.isConstructor()) continue;
+            for (FunctionSpec functionSpec : functionSpecs) {
+                if (!functionSpec.isConstructor()) continue;
                 if (!firstMember) codeWriter.emit("\n");
-                methodSpec.emit(codeWriter, name, kind.implicitMethodModifiers);
+                functionSpec.emit(codeWriter, name, kind.implicitMethodModifiers);
                 firstMember = false;
             }
 
             // Methods (static and non-static).
-            for (MethodSpec methodSpec : methodSpecs) {
-                if (methodSpec.isConstructor()) continue;
+            for (FunctionSpec functionSpec : functionSpecs) {
+                if (functionSpec.isConstructor()) continue;
                 if (!firstMember) codeWriter.emit("\n");
-                methodSpec.emit(codeWriter, name, kind.implicitMethodModifiers);
+                functionSpec.emit(codeWriter, name, kind.implicitMethodModifiers);
                 firstMember = false;
             }
 
@@ -381,7 +381,7 @@ public final class TypeSpec {
         private final List<FieldSpec> fieldSpecs = new ArrayList<>();
         private final CodeBlock.Builder staticBlock = CodeBlock.builder();
         private final CodeBlock.Builder initializerBlock = CodeBlock.builder();
-        private final List<MethodSpec> methodSpecs = new ArrayList<>();
+        private final List<FunctionSpec> functionSpecs = new ArrayList<>();
         private final List<TypeSpec> typeSpecs = new ArrayList<>();
         private final List<Element> originatingElements = new ArrayList<>();
         private TypeName superclass = ClassName.OBJECT;
@@ -531,31 +531,31 @@ public final class TypeSpec {
             return this;
         }
 
-        public Builder addMethods(Iterable<MethodSpec> methodSpecs) {
-            checkArgument(methodSpecs != null, "methodSpecs == null");
-            for (MethodSpec methodSpec : methodSpecs) {
-                addMethod(methodSpec);
+        public Builder addMethods(Iterable<FunctionSpec> methodSpecs) {
+            checkArgument(methodSpecs != null, "functionSpecs == null");
+            for (FunctionSpec functionSpec : methodSpecs) {
+                addMethod(functionSpec);
             }
             return this;
         }
 
-        public Builder addMethod(MethodSpec methodSpec) {
+        public Builder addMethod(FunctionSpec functionSpec) {
             if (kind == Kind.INTERFACE) {
-                requireExactlyOneOf(methodSpec.modifiers, Modifier.PUBLIC, Modifier.PRIVATE);
+                requireExactlyOneOf(functionSpec.modifiers, Modifier.PUBLIC, Modifier.PRIVATE);
             } else if (kind == Kind.ANNOTATION) {
-                checkState(methodSpec.modifiers.equals(kind.implicitMethodModifiers),
+                checkState(functionSpec.modifiers.equals(kind.implicitMethodModifiers),
                         "%s %s.%s requires modifiers %s",
-                        kind, name, methodSpec.name, kind.implicitMethodModifiers);
+                        kind, name, functionSpec.name, kind.implicitMethodModifiers);
             }
             if (kind != Kind.ANNOTATION) {
-                checkState(methodSpec.defaultValue == null, "%s %s.%s cannot have a default value",
-                        kind, name, methodSpec.name);
+                checkState(functionSpec.defaultValue == null, "%s %s.%s cannot have a default value",
+                        kind, name, functionSpec.name);
             }
             if (kind != Kind.INTERFACE) {
-                checkState(!hasDefaultModifier(methodSpec.modifiers), "%s %s.%s cannot be default",
-                        kind, name, methodSpec.name);
+                checkState(!hasDefaultModifier(functionSpec.modifiers), "%s %s.%s cannot be default",
+                        kind, name, functionSpec.name);
             }
-            methodSpecs.add(methodSpec);
+            functionSpecs.add(functionSpec);
             return this;
         }
 
@@ -585,9 +585,9 @@ public final class TypeSpec {
                     "at least one enum constant is required for %s", name);
 
             boolean isAbstract = modifiers.contains(Modifier.ABSTRACT) || kind != Kind.CLASS;
-            for (MethodSpec methodSpec : methodSpecs) {
-                checkArgument(isAbstract || !methodSpec.hasModifier(Modifier.ABSTRACT),
-                        "non-abstract type %s cannot declare abstract method %s", name, methodSpec.name);
+            for (FunctionSpec functionSpec : functionSpecs) {
+                checkArgument(isAbstract || !functionSpec.hasModifier(Modifier.ABSTRACT),
+                        "non-abstract type %s cannot declare abstract method %s", name, functionSpec.name);
             }
 
             boolean superclassIsObject = superclass.equals(ClassName.OBJECT);

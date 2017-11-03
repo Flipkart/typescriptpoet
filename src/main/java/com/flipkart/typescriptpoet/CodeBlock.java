@@ -28,7 +28,7 @@ import static com.flipkart.typescriptpoet.Util.checkArgument;
  * <li>{@code $N} emits a <em>name</em>, using name collision avoidance where necessary. Arguments
  * for names may be strings (actually any {@linkplain CharSequence character sequence}),
  * {@linkplain ParameterSpec parameters}, {@linkplain FieldSpec fields}, {@linkplain
- * MethodSpec methods}, and {@linkplain TypeSpec types}.
+ * FunctionSpec methods}, and {@linkplain TypeSpec types}.
  * <li>{@code $S} escapes the value as a <em>string</em>, wraps it with double quotes, and emits
  * that. For example, {@code 6" sandwich} is emitted {@code "6\" sandwich"}.
  * <li>{@code $T} emits a <em>type</em> reference. Types will be imported if possible. Arguments
@@ -281,7 +281,7 @@ public final class CodeBlock {
             if (o instanceof CharSequence) return o.toString();
             if (o instanceof ParameterSpec) return ((ParameterSpec) o).name;
             if (o instanceof FieldSpec) return ((FieldSpec) o).name;
-            if (o instanceof MethodSpec) return ((MethodSpec) o).name;
+            if (o instanceof FunctionSpec) return ((FunctionSpec) o).name;
             if (o instanceof TypeSpec) return ((TypeSpec) o).name;
             throw new IllegalArgumentException("expected name but was " + o);
         }

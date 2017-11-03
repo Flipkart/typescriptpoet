@@ -16,11 +16,11 @@ import static com.flipkart.typescriptpoet.Util.*;
 public final class FieldSpec {
     public final TypeName type;
     public final String name;
-    public final CodeBlock typescriptDoc;
     public final List<AnnotationSpec> annotations;
-    public final Set<Modifier> modifiers;
-    public final CodeBlock initializer;
-    public final boolean isMutable, isOptional;
+    private final CodeBlock typescriptDoc;
+    private final Set<Modifier> modifiers;
+    private final CodeBlock initializer;
+    private final boolean isMutable, isOptional;
 
     private FieldSpec(Builder builder) {
         this.type = checkNotNull(builder.type, "type == null");
@@ -46,7 +46,7 @@ public final class FieldSpec {
         return builder(TypeName.get(type), name, modifiers);
     }
 
-    public boolean hasModifier(com.flipkart.typescriptpoet.Modifier modifier) {
+    boolean hasModifier(com.flipkart.typescriptpoet.Modifier modifier) {
         return modifiers.contains(modifier);
     }
 
@@ -66,10 +66,7 @@ public final class FieldSpec {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null) return false;
-        if (getClass() != o.getClass()) return false;
-        return toString().equals(o.toString());
+        return this == o || o != null && getClass() == o.getClass() && toString().equals(o.toString());
     }
 
     @Override
@@ -118,13 +115,13 @@ public final class FieldSpec {
             return this;
         }
 
-        public Builder isMutable(boolean isMutable) {
-            this.isMutable = isMutable;
+        public Builder mutable() {
+            this.isMutable = true;
             return this;
         }
 
-        public Builder isOptional(boolean optional) {
-            this.isOptional = optional;
+        public Builder optional() {
+            this.isOptional = true;
             return this;
         }
 

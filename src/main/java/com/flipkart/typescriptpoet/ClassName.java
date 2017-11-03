@@ -16,13 +16,9 @@ import static javax.lang.model.element.NestingKind.MEMBER;
 import static javax.lang.model.element.NestingKind.TOP_LEVEL;
 
 public final class ClassName extends TypeName implements Comparable<ClassName> {
-    public static final ClassName OBJECT = ClassName.get(Object.class);
-
-    /**
-     * From top to bottom. This will be ["java.util", "Map", "Entry"] for {@link Map.Entry}.
-     */
-    final List<String> names;
+    static final ClassName OBJECT = ClassName.get(Object.class);
     final String canonicalName;
+    private final List<String> names;
 
     private ClassName(List<String> names) {
         this(names, new ArrayList<AnnotationSpec>());
@@ -58,36 +54,6 @@ public final class ClassName extends TypeName implements Comparable<ClassName> {
         int lastDot = clazz.getName().lastIndexOf('.');
         if (lastDot != -1) names.add(clazz.getName().substring(0, lastDot));
         Collections.reverse(names);
-        return new ClassName(names);
-    }
-
-    /**
-     * Returns a new {@link ClassName} instance for the given fully-qualified class name string. This
-     * method assumes that the input is ASCII and follows typical Java style (lowercase package
-     * names, UpperCamelCase class names) and may produce incorrect results or throw
-     * {@link IllegalArgumentException} otherwise. For that reason, {@link #get(Class)} and
-     * {@link #get(Class)} should be preferred as they can correctly create {@link ClassName}
-     * instances without such restrictions.
-     */
-    public static ClassName bestGuess(String classNameString) {
-        List<String> names = new ArrayList<>();
-
-        // Add the package name, like "java.util.concurrent", or "" for no package.
-        int p = 0;
-        while (p < classNameString.length() && Character.isLowerCase(classNameString.codePointAt(p))) {
-            p = classNameString.indexOf('.', p) + 1;
-            checkArgument(p != 0, "couldn't make a guess for %s", classNameString);
-        }
-        names.add(p != 0 ? classNameString.substring(0, p - 1) : "");
-
-        // Add the class names, like "Map" and "Entry".
-        for (String part : classNameString.substring(p).split("\\.", -1)) {
-            checkArgument(!part.isEmpty() && Character.isUpperCase(part.codePointAt(0)),
-                    "couldn't make a guess for %s", classNameString);
-            names.add(part);
-        }
-
-        checkArgument(names.size() >= 2, "couldn't make a guess for %s", classNameString);
         return new ClassName(names);
     }
 
@@ -143,19 +109,19 @@ public final class ClassName extends TypeName implements Comparable<ClassName> {
     /**
      * Returns the package name, like {@code "java.util"} for {@code Map.Entry}.
      */
-    public String packageName() {
+    String packageName() {
         return names.get(0);
     }
 
-    public String moduleName() {
-        return names.get(0).replace(".", "/") + "/" + simpleName();
+    String fullyQualifiedName() {
+        return packageName().replace(".", "/") + "/" + simpleName();
     }
 
     /**
      * Returns the enclosing class, like {@link Map} for {@code Map.Entry}. Returns null if this class
      * is not nested in another class.
      */
-    public ClassName enclosingClassName() {
+    ClassName enclosingClassName() {
         if (names.size() == 2) return null;
         return new ClassName(names.subList(0, names.size() - 1));
     }
@@ -164,33 +130,15 @@ public final class ClassName extends TypeName implements Comparable<ClassName> {
      * Returns the top class in this nesting group. Equivalent to chained calls to {@link
      * #enclosingClassName()} until the result's enclosing class is null.
      */
-    public ClassName topLevelClassName() {
+    ClassName topLevelClassName() {
         return new ClassName(names.subList(0, 2));
-    }
-
-    public String reflectionName() {
-        // trivial case: no nested names
-        if (names.size() == 2) {
-            String packageName = packageName();
-            if (packageName.isEmpty()) {
-                return names.get(1);
-            }
-            return packageName + "." + names.get(1);
-        }
-        // concat top level class name and nested names
-        StringBuilder builder = new StringBuilder();
-        builder.append(topLevelClassName());
-        for (String name : simpleNames().subList(1, simpleNames().size())) {
-            builder.append('$').append(name);
-        }
-        return builder.toString();
     }
 
     /**
      * Returns a new {@link ClassName} instance for the specified {@code name} as nested inside this
      * class.
      */
-    public ClassName nestedClass(String name) {
+    ClassName nestedClass(String name) {
         checkNotNull(name, "name == null");
         List<String> result = new ArrayList<>(names.size() + 1);
         result.addAll(names);
@@ -198,25 +146,14 @@ public final class ClassName extends TypeName implements Comparable<ClassName> {
         return new ClassName(result);
     }
 
-    public List<String> simpleNames() {
+    List<String> simpleNames() {
         return names.subList(1, names.size());
-    }
-
-    /**
-     * Returns a class that shares the same enclosing package or class. If this class is enclosed by
-     * another class, this is equivalent to {@code enclosingClassName().nestedClass(name)}. Otherwise
-     * it is equivalent to {@code get(packageName(), name)}.
-     */
-    public ClassName peerClass(String name) {
-        List<String> result = new ArrayList<>(names);
-        result.set(result.size() - 1, name);
-        return new ClassName(result);
     }
 
     /**
      * Returns the simple name of this class, like {@code "Entry"} for {@link Map.Entry}.
      */
-    public String simpleName() {
+    String simpleName() {
         return names.get(names.size() - 1);
     }
 

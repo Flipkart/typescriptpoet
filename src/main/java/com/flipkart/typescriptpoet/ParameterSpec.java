@@ -49,7 +49,7 @@ public final class ParameterSpec {
         codeWriter.emitModifiers(modifiers);
         if (varargs) {
             //todo check for varags
-//            codeWriter.emit("$T... $L", TypeName.arrayComponent(type), name);
+            //codeWriter.emit("$T... $L", TypeName.arrayComponent(type), name);
         } else {
             String codeArg = isOptional ? "$L?: $T" : "$L: $T";
             codeWriter.emit(codeArg, name, type);
@@ -58,10 +58,7 @@ public final class ParameterSpec {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null) return false;
-        if (getClass() != o.getClass()) return false;
-        return toString().equals(o.toString());
+        return this == o || o != null && getClass() == o.getClass() && toString().equals(o.toString());
     }
 
     @Override
