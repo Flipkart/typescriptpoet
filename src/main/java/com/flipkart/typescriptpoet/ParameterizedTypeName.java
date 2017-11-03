@@ -33,8 +33,6 @@ public class ParameterizedTypeName extends TypeName {
             checkArgument(!typeArgument.isPrimitive() && typeArgument != VOID,
                     "invalid type parameter: %s", typeArgument);
         }
-        this.mapParameterizedTypeName = new MapParameterizedTypeName(enclosingType, rawType, typeArguments);
-        this.listParameterizedTypeName = new ListParameterizedTypeName(enclosingType, rawType, typeArguments);
     }
 
     /**
@@ -72,6 +70,20 @@ public class ParameterizedTypeName extends TypeName {
                 : new ParameterizedTypeName(null, rawType, typeArguments);
     }
 
+    private MapParameterizedTypeName getMapParameterizedTypeName() {
+        if (mapParameterizedTypeName == null) {
+            mapParameterizedTypeName = new MapParameterizedTypeName(enclosingType, rawType, typeArguments);
+        }
+        return mapParameterizedTypeName;
+    }
+
+    private ListParameterizedTypeName getListParameterizedTypeName() {
+        if (listParameterizedTypeName == null) {
+            listParameterizedTypeName = new ListParameterizedTypeName(enclosingType, rawType, typeArguments);
+        }
+        return listParameterizedTypeName;
+    }
+
     @Override
     public ParameterizedTypeName annotated(List<AnnotationSpec> annotations) {
         return new ParameterizedTypeName(
@@ -87,10 +99,10 @@ public class ParameterizedTypeName extends TypeName {
     @Override
     CodeWriter emit(CodeWriter out) throws IOException {
         if (Util.isMap(rawType)) {
-            return mapParameterizedTypeName.emit(out);
+            return getMapParameterizedTypeName().emit(out);
         }
 
-        return listParameterizedTypeName.emit(out);
+        return getListParameterizedTypeName().emit(out);
     }
 
     /**

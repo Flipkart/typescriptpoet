@@ -13,19 +13,18 @@ import java.lang.reflect.TypeVariable;
 import java.util.*;
 
 public class TypeName {
-    static final TypeName VOID = new TypeName("void");
-    static final TypeName INT = new TypeName("number");
-    static final TypeName STRING = new TypeName("string");
-    static final TypeName OBJECT = new TypeName("object");
-
-    private static final TypeName BOOLEAN = new TypeName("boolean");
-    private static final TypeName BYTE = new TypeName("number");
-    private static final TypeName SHORT = new TypeName("number");
-    private static final TypeName LONG = new TypeName("number");
-    private static final TypeName CHAR = new TypeName("char");
-    private static final TypeName FLOAT = new TypeName("number");
-    private static final TypeName DOUBLE = new TypeName("number");
-    private static final TypeName ANY = new TypeName("any");
+    public static final TypeName VOID = new TypeName("void");
+    public static final TypeName INT = new TypeName("number");
+    public static final TypeName STRING = new TypeName("string");
+    public static final TypeName OBJECT = new TypeName("object");
+    public static final TypeName BOOLEAN = new TypeName("boolean");
+    public static final TypeName BYTE = new TypeName("number");
+    public static final TypeName SHORT = new TypeName("number");
+    public static final TypeName LONG = new TypeName("number");
+    public static final TypeName CHAR = new TypeName("char");
+    public static final TypeName FLOAT = new TypeName("number");
+    public static final TypeName DOUBLE = new TypeName("number");
+    public static final TypeName ANY = new TypeName("any");
 
     public final List<AnnotationSpec> annotations;
     /**

@@ -18,7 +18,7 @@ public class TypeScriptFileTest {
 
         FieldSpec redPropSpec = FieldSpec.builder(TypeName.STRING, "red").initializer("\"red\"").build();
         FieldSpec greenPropSpec = FieldSpec.builder(TypeName.STRING, "green").addModifiers(Modifier.PUBLIC).build();
-        FieldSpec purplePropSpec = FieldSpec.builder(TypeName.INT, "purple").isOptional(true).build();
+        FieldSpec purplePropSpec = FieldSpec.builder(TypeName.INT, "purple").optional().build();
 
         List<FieldSpec> propertySpecs = new ArrayList<>();
         propertySpecs.add(redPropSpec);

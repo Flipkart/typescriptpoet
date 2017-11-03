@@ -43,7 +43,7 @@ public final class FunctionSpec {
         this.code = code;
     }
 
-    static Builder methodBuilder(String name) {
+    public static Builder methodBuilder(String name) {
         return new Builder(name);
     }
 
