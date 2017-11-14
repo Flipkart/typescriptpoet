@@ -58,7 +58,6 @@ public class TypeScriptFileTest {
         classFunction.addCode(codeBuilder.build());
         typeSpecBuilder.addMethod(classFunction.build());
 
-
         classFunction = FunctionSpec.methodBuilder("setDisp").addJavadoc("//function");
         codeBuilder = CodeBlock.builder();
         codeBuilder.addStatement("console.log(\"Engine is  :  \"+ this.engine)");
