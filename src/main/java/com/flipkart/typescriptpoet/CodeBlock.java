@@ -13,7 +13,7 @@ import java.util.regex.Pattern;
 import static com.flipkart.typescriptpoet.Util.checkArgument;
 
 /**
- * A fragment of a .java file, potentially containing declarations, statements, and documentation.
+ * A fragment of a .ts file, potentially containing declarations, statements, and documentation.
  * Code blocks are not necessarily well-formed Java code, and are not validated. This class assumes
  * javac will check correctness later!
  * <p>

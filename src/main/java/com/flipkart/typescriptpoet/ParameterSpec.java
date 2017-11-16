@@ -48,8 +48,7 @@ public final class ParameterSpec {
         codeWriter.emitAnnotations(annotations, true);
         codeWriter.emitModifiers(modifiers);
         if (varargs) {
-            //todo check for varags
-            //codeWriter.emit("$T... $L", TypeName.arrayComponent(type), name);
+            codeWriter.emit("...$L: $T", name, TypeName.arrayComponent(type));
         } else {
             String codeArg = isOptional ? "$L?: $T" : "$L: $T";
             codeWriter.emit(codeArg, name, type);
@@ -95,7 +94,7 @@ public final class ParameterSpec {
 
         private final List<AnnotationSpec> annotations = new ArrayList<>();
         private final List<Modifier> modifiers = new ArrayList<>();
-        private boolean isOptional;
+        private boolean isOptional = false;
 
         private Builder(TypeName type, String name) {
             this.type = type;
@@ -120,8 +119,8 @@ public final class ParameterSpec {
             return this;
         }
 
-        public Builder isOptional(boolean optional) {
-            this.isOptional = optional;
+        public Builder optional() {
+            this.isOptional = true;
             return this;
         }
 

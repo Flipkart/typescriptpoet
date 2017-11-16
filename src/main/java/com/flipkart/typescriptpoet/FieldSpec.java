@@ -115,8 +115,8 @@ public final class FieldSpec {
             return this;
         }
 
-        public Builder mutable() {
-            this.isMutable = true;
+        public Builder isMutable(boolean isMutable) {
+            this.isMutable = isMutable;
             return this;
         }
 

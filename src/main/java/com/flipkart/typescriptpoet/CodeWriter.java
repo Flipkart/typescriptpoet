@@ -31,7 +31,7 @@ final class CodeWriter {
      */
     int statementLine = -1;
     private int indentLevel;
-    private boolean javadoc = false;
+    private boolean tsDoc = false;
     private boolean comment = false;
     private String packageName = NO_PACKAGE;
     private boolean trailingNewline;
@@ -126,11 +126,11 @@ final class CodeWriter {
         if (javadocCodeBlock.isEmpty()) return;
 
         emit("/**\n");
-        javadoc = true;
+        tsDoc = true;
         try {
             emit(javadocCodeBlock);
         } finally {
-            javadoc = false;
+            tsDoc = false;
         }
         emit(" */\n");
     }
@@ -343,7 +343,7 @@ final class CodeWriter {
         }
 
         // We'll have to use the fully-qualified name. Mark the type as importable for a future pass.
-        if (!javadoc) {
+        if (!tsDoc) {
             importableType(className);
         }
 
@@ -412,9 +412,9 @@ final class CodeWriter {
         for (String line : s.split("\n", -1)) {
             // Emit a newline character. Make sure blank lines in Javadoc & comments look good.
             if (!first) {
-                if ((javadoc || comment) && trailingNewline) {
+                if ((tsDoc || comment) && trailingNewline) {
                     emitIndentation();
-                    out.append(javadoc ? " *" : "//");
+                    out.append(tsDoc ? " *" : "//");
                 }
                 out.append("\n");
                 trailingNewline = true;
@@ -432,7 +432,7 @@ final class CodeWriter {
             // Emit indentation and comment prefix if necessary.
             if (trailingNewline) {
                 emitIndentation();
-                if (javadoc) {
+                if (tsDoc) {
                     out.append(" * ");
                 } else if (comment) {
                     out.append("// ");
