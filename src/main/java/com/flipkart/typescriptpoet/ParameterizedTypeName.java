@@ -178,12 +178,8 @@ public class ParameterizedTypeName extends TypeName {
 
         @Override
         CodeWriter emit(CodeWriter out) throws IOException {
-            out.emit("Record<");
-            TypeName parameter = typeArguments.get(0);
-            parameter.emitAnnotations(out);
-            parameter.emit(out);
-            out.emit(", ");
-            parameter = typeArguments.get(1);
+            out.emit("Record<string, ");
+            TypeName parameter = typeArguments.get(1);
             parameter.emitAnnotations(out);
             parameter.emit(out);
             out.emit(">");
