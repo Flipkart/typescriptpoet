@@ -94,8 +94,6 @@ public class TypeName {
                         return TypeName.FLOAT;
                     case DOUBLE:
                         return TypeName.DOUBLE;
-                    case NONE:
-                        return TypeName.ANY;
                     default:
                         throw new AssertionError();
                 }
