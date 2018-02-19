@@ -59,7 +59,7 @@ Snapshots of the development version are available in [Sonatype's `snapshots` re
 Credits
 -------
 
-Inspired by [JavaPoet](https://github.com/square/javapoet)
+Built on top of [JavaPoet](https://github.com/square/javapoet)
 
 License
 -------
