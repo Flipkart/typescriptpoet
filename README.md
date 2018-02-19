@@ -64,6 +64,7 @@ Inspired by [JavaPoet](https://github.com/square/javapoet)
 License
 -------
 
+    Copyright (C) 2015 Square, Inc.
     Copyright 2018 Flipkart, Inc.
 
     Licensed under the Apache License, Version 2.0 (the "License");
