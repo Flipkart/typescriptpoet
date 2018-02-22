@@ -52,7 +52,7 @@ Add it in your root build.gradle at the end of repositories:
 Add the dependency
 
 	dependencies {
-	        compile 'com.github.Flipkart:typescriptpoet:1.0.0'
+	        compile 'com.github.Flipkart:typescriptpoet:1.0'
 	}
 
 Credits
