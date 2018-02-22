@@ -1,7 +1,7 @@
 TypeScriptPoet
 ========
 
-`TypeScriptPoet` is a TypeScript API for generating `.ts` source files.
+`TypeScriptPoet` is a Java API for generating typescript files (.ts).
 
 Source file generation can be useful when doing things such as annotation processing or interacting
 with metadata files (e.g., database schemas, protocol formats). By generating code, you eliminate
@@ -20,7 +20,7 @@ export class HelloWorld {
 }
 ```
 
-And this is the (exciting) code to generate it with JavaPoet:
+And this is the (exciting) code to generate it with TypescriptPoet:
 
 ```java
 MethodSpec main = MethodSpec.methodBuilder("printMessage")
@@ -40,21 +40,9 @@ file.writeTo(System.out);
 Download
 --------
 
-Download [the latest .jar][dl] or depend via Maven:
-```xml
-<dependency>
-  <groupId>com.flipkart.typescript</groupId>
-  <artifactId>typescriptpoet</artifactId>
-  <version>1.0.0</version>
-</dependency>
-```
-or Gradle:
 ```groovy
 compile 'com.flipkart.typescript:typescriptpoet:1.0.0'
 ```
-
-Snapshots of the development version are available in [Sonatype's `snapshots` repository][snap].
-
 
 Credits
 -------
