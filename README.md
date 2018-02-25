@@ -1,6 +1,9 @@
 TypeScriptPoet
 ========
 
+[![](https://jitpack.io/v/Flipkart/typescriptpoet.svg)](https://jitpack.io/#Flipkart/typescriptpoet)
+[![Build Status](https://travis-ci.org/Flipkart/typescriptpoet.svg?branch=master)](https://travis-ci.org/Flipkart/typescriptpoet)
+
 `TypeScriptPoet` is a Java API for generating typescript files (.ts).
 
 Source file generation can be useful when doing things such as annotation processing or interacting
