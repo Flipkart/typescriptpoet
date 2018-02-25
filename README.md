@@ -43,6 +43,8 @@ file.writeTo(System.out);
 Download
 --------
 
+### Gradle :
+
 Add it in your root build.gradle at the end of repositories:
 
 	allprojects {
@@ -52,12 +54,31 @@ Add it in your root build.gradle at the end of repositories:
 		}
 	}
   
-Add the dependency
+Add the dependency:
 
 	dependencies {
 	        compile 'com.github.Flipkart:typescriptpoet:1.0'
 	}
 
+### Maven : 
+
+Add the JitPack repository to your build file:
+
+	<repositories>
+		<repository>
+		    <id>jitpack.io</id>
+		    <url>https://jitpack.io</url>
+		</repository>
+	</repositories>
+	
+Add the dependency: 
+
+	<dependency>
+	    <groupId>com.github.Flipkart</groupId>
+	    <artifactId>typescriptpoet</artifactId>
+	    <version>1.0</version>
+	</dependency>
+	
 Credits
 -------
 
