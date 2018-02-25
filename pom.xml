@@ -6,7 +6,7 @@
 
     <groupId>com.flipkart.typescript</groupId>
     <artifactId>typescriptpoet</artifactId>
-    <version>1.0.4</version>
+    <version>1.0</version>
     <build>
         <plugins>
             <plugin>
@@ -20,49 +20,12 @@
         </plugins>
     </build>
 
-    <distributionManagement>
-        <snapshotRepository>
-            <id>fk-art-snapshot</id>
-            <name>libs-snapshot</name>
-            <url>http://10.85.59.116/artifactory/v1.0/artifacts/libs-snapshots-local</url>
-        </snapshotRepository>
-        <repository>
-            <id>fk-art-release</id>
-            <name>libs-rel</name>
-            <url>http://10.85.59.116/artifactory/v1.0/artifacts/libs-release-local</url>
-        </repository>
-    </distributionManagement>
-
-    <pluginRepositories>
-        <pluginRepository>
-            <id>fk-art-snapshot</id>
-            <name>Flipkart-Artifactory</name>
-            <url>http://10.85.59.116/artifactory/v1.0/artifacts/libs-snapshots-local</url>
-        </pluginRepository>
-        <pluginRepository>
-            <id>fk-art-release</id>
-            <name>Flipkart-Artifactory</name>
-            <url>http://10.85.59.116/artifactory/v1.0/artifacts/libs-release-local</url>
-        </pluginRepository>
-    </pluginRepositories>
-
-    <repositories>
-        <repository>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-            <id>fk-art-snapshot</id>
-            <name>Flipkart-Artifactory</name>
-            <url>http://10.85.59.116/artifactory/v1.0/artifacts/libs-snapshots-local</url>
-        </repository>
-        <repository>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-            <id>fk-art-release</id>
-            <name>Flipkart-Artifactory</name>
-            <url>http://10.85.59.116/artifactory/v1.0/artifacts/libs-release-local</url>
-        </repository>
-    </repositories>
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+        </dependency>
+    </dependencies>
 
 </project>
