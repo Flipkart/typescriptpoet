@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RunWith(JUnit4.class)
-public class TypeScriptFileTest {
+public class TypescriptTestFile {
 
     @Test
     public void simpleTypeScriptClassGeneration() throws Exception {
@@ -66,7 +66,7 @@ public class TypeScriptFileTest {
         typeSpecBuilder.addMethod(classFunction.build());
 
         TypeSpec typeSpec = typeSpecBuilder.build();
-        File target = new File(TypeScriptFileTest.class.getName()).getParentFile();
+        File target = new File(TypescriptTestFile.class.getName()).getParentFile();
         File generatedSources = new File(target, "generated-sources");
 
         TypeScriptFile.builder("com.flipkart.typescript", typeSpec).build().writeTo(generatedSources);
@@ -88,7 +88,7 @@ public class TypeScriptFileTest {
 
         TypeSpec typeSpec = typeSpecBuilder.build();
 
-        File target = new File(TypeScriptFileTest.class.getName()).getParentFile();
+        File target = new File(TypescriptTestFile.class.getName()).getParentFile();
         File generatedSources = new File(target, "generated-sources");
 
         TypeScriptFile.builder("com.flipkart.typescript", typeSpec).build().writeTo(generatedSources);
@@ -96,7 +96,7 @@ public class TypeScriptFileTest {
 
     @Test
     public void simpleTypeScriptInheritanceGeneration() throws Exception {
-        File target = new File(TypeScriptFileTest.class.getName()).getParentFile();
+        File target = new File(TypescriptTestFile.class.getName()).getParentFile();
         File generatedSources = new File(target, "generated-sources");
 
         String subClassName = "SubColorInheritance";
