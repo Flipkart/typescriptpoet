@@ -47,38 +47,44 @@ Download
 
 Add it in your root build.gradle at the end of repositories:
 
-	allprojects {
-		repositories {
-			...
-			maven { url 'https://jitpack.io' }
-		}
-	}
+````groovy
+allprojects {
+   repositories {
+	...
+	maven { url 'https://jitpack.io' }
+   }
+}
+````
   
 Add the dependency:
 
-	dependencies {
-	        compile 'com.github.Flipkart:typescriptpoet:1.0'
-	}
+````groovy
+dependencies {
+   compile 'com.github.Flipkart:typescriptpoet:1.0'
+}
+````
 
 ### Maven : 
 
 Add the JitPack repository to your build file:
 
-	<repositories>
-		<repository>
-		    <id>jitpack.io</id>
-		    <url>https://jitpack.io</url>
-		</repository>
-	</repositories>
-	
+````groovy
+<repositories>
+   <repository>
+	<id>jitpack.io</id>
+	<url>https://jitpack.io</url>
+   </repository>
+</repositories>
+````
 Add the dependency: 
 
-	<dependency>
-	    <groupId>com.github.Flipkart</groupId>
-	    <artifactId>typescriptpoet</artifactId>
-	    <version>1.0</version>
-	</dependency>
-	
+````groovy
+<dependency>
+   <groupId>com.github.Flipkart</groupId>
+   <artifactId>typescriptpoet</artifactId>
+   <version>1.0</version>
+</dependency>
+````
 Credits
 -------
 
