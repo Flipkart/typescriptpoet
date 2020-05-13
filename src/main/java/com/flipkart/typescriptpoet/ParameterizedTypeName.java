@@ -161,12 +161,15 @@ public class ParameterizedTypeName extends TypeName {
                 lastParameterInType = true;
             }
 
+            boolean firstTypeVariable = true;
             for (TypeName parameter : typeArguments) {
-                if (!firstParameterInType) out.emitAndIndent("<");
+                if (!firstTypeVariable) out.emitAndIndent(", ");
+                if (!firstParameterInType && firstTypeVariable) out.emitAndIndent("<");
                 parameter.emitAnnotations(out);
                 parameter.emit(out);
                 if (!firstParameterInType) out.emitAndIndent(">");
                 firstParameterInType = false;
+                firstTypeVariable = false;
             }
 
             if (!firstParameterInType && lastParameterInType) {
