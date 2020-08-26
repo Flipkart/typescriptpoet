@@ -161,11 +161,16 @@ public class ParameterizedTypeName extends TypeName {
                 lastParameterInType = true;
             }
 
-            for (TypeName parameter : typeArguments) {
-                if (!firstParameterInType) out.emitAndIndent("<");
+            int totalArgumentsSize = typeArguments.size();
+            for (int i = 0; i < totalArgumentsSize; i++) {
+                TypeName parameter = typeArguments.get(i);
+                if (i > 0 && i <= totalArgumentsSize - 1) {
+                    out.emitAndIndent(", ");
+                }
+                if (!firstParameterInType && i == 0) out.emitAndIndent("<");
                 parameter.emitAnnotations(out);
                 parameter.emit(out);
-                if (!firstParameterInType) out.emitAndIndent(">");
+                if (!firstParameterInType && i == totalArgumentsSize - 1) out.emitAndIndent(">");
                 firstParameterInType = false;
             }
 
